@@ -10,13 +10,15 @@ You may obtain a copy of the License at
 
 # Security Policy
 
-Documentation of the measures taken to inspect for security vulnerabilities in the repository. This documentation should also, at least, include ways the issues detected are handled.
-## Supported Versions
+The Dell CSI Extensions services/repositories are inspected for security vulnerabilities via [gosec](https://github.com/securego/gosec).
 
-| Version | Supported          |
-| ------- | ------------------ |
-|         |
+Every issue detected by `gosec` is mapped to a [CWE (Common Weakness Enumeration)](http://cwe.mitre.org/data/index.html) which describes in more generic terms the vulnerability.  The exact mapping can be found at https://github.com/securego/gosec in the issue.go file. The list of rules checked by `gosec` can be found [here](https://github.com/securego/gosec#available-rules).
+
+In addition to this, there are various security checks that get executed against a branch when a pull request is created/updated.  Please refer to [pull request](/docs/CONTRIBUTING.md#pull-requests) for more information.
 
 ## Reporting a Vulnerability
 
-Please report a vulnerability by opening an Issue in this repository.
+Have you discovered a security vulnerability in this project?
+We ask you to alert the maintainers by sending an email, describing the issue, impact, and fix - if applicable.
+
+You can reach the Karavi maintainers at [karavi@dell.com](mailto:karavi@dell.com).

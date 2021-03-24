@@ -3,6 +3,11 @@ gen-podmon: protoc
 	export PATH="$$PATH:./bin" && $(PROTOC) -I $(PROTO_INCLUDE) --go_out=plugins=grpc:podmon --proto_path podmon podmon.proto
 	(cd podmon; go build podmon.pb.go)
 
+gen-replication: protoc
+	go clean ./...
+	export PATH="$$PATH:./bin" && $(PROTOC) -I $(PROTO_INCLUDE) --go_out=plugins=grpc:replication --proto_path=replication replication/replication.proto
+	(cd replication; go build replication.pb.go)
+
 protoc:
 ifeq (, $(shell ls .proto 2> /dev/null))
 	@{ \

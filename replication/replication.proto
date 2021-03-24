@@ -1,0 +1,135 @@
+syntax = "proto3";
+package replication.v1alpha1;
+
+import "google/protobuf/wrappers.proto";
+
+option go_package = ".;replication";
+
+service Replication {
+  // ProbeController is used to verify if the CSI driver controller plugin is ready to service Replication APIs
+  rpc ProbeController(ProbeControllerRequest)
+      returns (ProbeControllerResponse) {}
+  // GetReplicationCapabilities is used to query CSI drivers for their supported replication capabilities
+  rpc GetReplicationCapabilities(GetReplicationCapabilityRequest)
+      returns (GetReplicationCapabilityResponse) {}
+  // DiscoverStorageProtectionGroup is used to discover attributes for a Storage Protection group
+  rpc DiscoverStorageProtectionGroup(DiscoverStorageProtectionGroupRequest)
+      returns (DiscoverStorageProtectionGroupResponse) {}
+  // DiscoverRemoteVolume is used to query attributes of the remote replicated volume
+  rpc DiscoverRemoteVolume(DiscoverRemoteVolumeRequest)
+      returns (DiscoverRemoteVolumeResponse) {}
+  // DeleteStorageProtectionGroup is used to delete a Storage Protection group
+  rpc DeleteStorageProtectionGroup(DeleteStorageProtectionGroupRequest)
+      returns (DeleteStorageProtectionGroupResponse) {}
+}
+
+message ProbeControllerRequest {
+  // Intentionally left empty
+}
+
+// Metadata about the driver and its readiness
+// for accepting the RPC calls.
+message ProbeControllerResponse {
+  // Name of the driver
+  // This should be the same name which is advertised
+  // to the CSI external provisioner
+  string name = 1;
+  // Version of the CSI driver
+  string vendor_version = 2;
+
+  map<string, string> manifest = 3;
+
+  .google.protobuf.BoolValue ready = 4;
+}
+
+// Input request used in GetReplicationCapabilities API
+message GetReplicationCapabilityRequest {
+  // Intentionally left empty
+}
+
+// Capabilities of the driver, in terms of the
+// RPC calls it supports
+message GetReplicationCapabilityResponse {
+  repeated ReplicationCapability capabilities = 1;
+}
+
+// ReplicationCapability is the set of replication capabilities
+// which can be advertised by a CSI driver.
+// For e.g. if a driver supports discovery of remote volume characteristics
+// via the extensions API, then it needs to include DISCOVER_REMOTE_VOLUME
+// in its list of replication capabilities
+message ReplicationCapability {
+  message RPC {
+    enum Type {
+      DISCOVER_REMOTE_VOLUME = 0;
+      DISCOVER_PROTECTION_GROUPS = 1;
+      MONITOR_PROTECTION_GROUP = 2;
+      CREATE_PROTECTION_GROUP = 3;
+      DELETE_PROTECTION_GROUP = 4;
+    }
+    Type type = 1;
+  }
+  oneof type {
+    RPC rpc = 1;
+  }
+}
+
+message DiscoverRemoteVolumeRequest {
+  // Handle of the local volume, whose remote replica is being requested
+  string volume_handle = 1;
+  // Optional information about the local volume
+  // will be supplied if the driver returned this information
+  // in the CSI CreateVolumeResponse
+  map<string, string> parameters = 2;
+}
+
+message DiscoverStorageProtectionGroupRequest {
+  // Handle of the volume, whose storage protection group is being requested,
+  string volume_handle = 1;
+  // Optional information about the Volume
+  // will be supplied if the driver returned this information
+  // in the CSI CreateVolumeResponse
+  map<string, string> parameters = 2;
+}
+
+message DiscoverStorageProtectionGroupResponse {
+  // Identifier for the local storage protection group
+  // This should be unique for one CSI driver
+  string local_protection_group_id = 1;
+  // Identifier for the remote storage protection group
+  // This should be unique for one CSI driver
+  string remote_protection_group_id = 2;
+  // Attributes for the local storage protection group
+  map<string, string> local_protection_group_attributes = 3;
+  // Attributes for the remote storage protection group
+  map<string, string> remote_protection_group_attributes = 4;
+}
+
+// Information about the remote replica of a local volume
+message DiscoverRemoteVolumeResponse {
+  // Remote Volume
+  Volume remote_volume = 1;
+}
+
+// Information about a specific volume
+message Volume {
+  // Size of the volume in bytes
+  int64 capacity_bytes = 1;
+  // Volume ID - should be the same as one
+  // returned in the CSI CreateVolumeResponse
+  string volume_id = 2;
+  // Optional context information about the volume
+  // which can be passed down to the driver in future calls
+  map<string, string> volume_context = 3;
+}
+
+message DeleteStorageProtectionGroupRequest {
+  // Unique identifier, representing the storage protection group
+  string protection_group_id = 1;
+  // Attributes of the storage protection group attributes (optional)
+  map<string, string> protection_group_attributes = 2;
+}
+
+message DeleteStorageProtectionGroupResponse {
+  // Intentionally left empty
+}

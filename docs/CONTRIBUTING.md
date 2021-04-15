@@ -65,7 +65,7 @@ If you have an idea of how to improve this project, submit a [feature request](h
 
 If you have a question, and you can't find the answer in the documentation or issues, the next step is to submit a [question.](https://github.com/dell/dell-csi-extensions/issues/new?labels=type%2Fquestion&template=ask-a-question.md&title=%5BQUESTION%5D%3A)
 
-We'd love your help to answer questions being asked by other Karavi users.
+We'd love your help to answer questions being asked by other CSM users.
 
 ## Triage issues
 
@@ -76,7 +76,7 @@ Triage helps ensure that issues resolve quickly by:
 * Lowering the issue count by preventing duplicate issues.
 * Streamlining the development process by preventing duplicate discussions.
 
-If you don't have the knowledge or time to code, consider helping with _issue triage_. The Karavi community will thank you for saving them time by spending some of yours.
+If you don't have the knowledge or time to code, consider helping with _issue triage_. The CSM community will thank you for saving them time by spending some of yours.
 
 Read more about the ways you can [Triage issues](ISSUE_TRIAGE.md).
 
@@ -117,7 +117,7 @@ $ git commit -S -m your commit message
 
 ### Commit message format
 
-Karavi uses the guidelines for commit messages outlined in [How to Write a Git Commit Message](https://chris.beams.io/posts/git-commit/)
+CSM uses the guidelines for commit messages outlined in [How to Write a Git Commit Message](https://chris.beams.io/posts/git-commit/)
 
 ## Pull Requests
 
@@ -138,7 +138,7 @@ If the pull request fixes a bug:
 * The pull request description must include `Fixes #<issue number>`.
 * To avoid regressions, the pull request should include tests that replicate the fixed bug.
 
-The Karavi team _squashes_ all commits into one when we accept a pull request. The title of the pull request becomes the subject line of the squashed commit message. We still encourage contributors to write informative commit messages, as they becomes a part of the Git commit body.
+The CSM team _squashes_ all commits into one when we accept a pull request. The title of the pull request becomes the subject line of the squashed commit message. We still encourage contributors to write informative commit messages, as they becomes a part of the Git commit body.
 
 We use the pull request title when we generate change logs for releases. As such, we strive to make the title as informative as possible.
 

@@ -21,4 +21,4 @@ In addition to this, there are various security checks that get executed against
 Have you discovered a security vulnerability in this project?
 We ask you to alert the maintainers by sending an email, describing the issue, impact, and fix - if applicable.
 
-You can reach the Karavi maintainers at [karavi@dell.com](mailto:karavi@dell.com).
+You can reach the CSM maintainers at [karavi@dell.com](mailto:karavi@dell.com).

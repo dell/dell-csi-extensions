@@ -15,8 +15,8 @@ Current set of supported protocols:
 You can utilize the provided `Makefile` to compile protocol definitions in .proto files to go source files and then build 
 the source files.
 
-    `gen-podmon` to compile and update files for podmon
-    `gen-replication` to compile and update files for replication.
+* `podmon` to compile and update files for podmon
+* `replication` to compile and update files for replication.
 
 Each protocol is available as a `go module` and can be included separately in CSI drivers. 
 

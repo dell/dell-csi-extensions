@@ -3,7 +3,7 @@ package replication.v1alpha1;
 
 import "google/protobuf/wrappers.proto";
 
-option go_package = ".;replication";
+option go_package = "./;replication";
 
 service Replication {
   // ProbeController is used to verify if the CSI driver controller plugin is ready to service Replication APIs
@@ -12,15 +12,21 @@ service Replication {
   // GetReplicationCapabilities is used to query CSI drivers for their supported replication capabilities
   rpc GetReplicationCapabilities(GetReplicationCapabilityRequest)
       returns (GetReplicationCapabilityResponse) {}
-  // DiscoverStorageProtectionGroup is used to discover attributes for a Storage Protection group
-  rpc DiscoverStorageProtectionGroup(DiscoverStorageProtectionGroupRequest)
-      returns (DiscoverStorageProtectionGroupResponse) {}
-  // DiscoverRemoteVolume is used to query attributes of the remote replicated volume
-  rpc DiscoverRemoteVolume(DiscoverRemoteVolumeRequest)
-      returns (DiscoverRemoteVolumeResponse) {}
+  // CreateStorageProtectionGroup is used to create Storage Protection Group on array
+  rpc CreateStorageProtectionGroup(CreateStorageProtectionGroupRequest)
+      returns (CreateStorageProtectionGroupResponse) {}
+  // CreateRemoteVolume is used to create volume on remote array
+  rpc CreateRemoteVolume(CreateRemoteVolumeRequest)
+      returns (CreateRemoteVolumeResponse) {}
   // DeleteStorageProtectionGroup is used to delete a Storage Protection group
   rpc DeleteStorageProtectionGroup(DeleteStorageProtectionGroupRequest)
       returns (DeleteStorageProtectionGroupResponse) {}
+  // ExecuteAction is used to update the action to failover, testfailover, failback, suspend, etc.
+  rpc ExecuteAction(ExecuteActionRequest)
+      returns (ExecuteActionResponse) {}
+  // GetStorageProtectionGroupStatus is used to monitor the status of Storage Protection groups
+  rpc GetStorageProtectionGroupStatus(GetStorageProtectionGroupStatusRequest)
+      returns (GetStorageProtectionGroupStatusResponse) {}
 }
 
 message ProbeControllerRequest {
@@ -61,11 +67,11 @@ message GetReplicationCapabilityResponse {
 message ReplicationCapability {
   message RPC {
     enum Type {
-      DISCOVER_REMOTE_VOLUME = 0;
-      DISCOVER_PROTECTION_GROUPS = 1;
-      MONITOR_PROTECTION_GROUP = 2;
-      CREATE_PROTECTION_GROUP = 3;
-      DELETE_PROTECTION_GROUP = 4;
+      CREATE_REMOTE_VOLUME = 0;
+      CREATE_PROTECTION_GROUP = 1;
+      DELETE_PROTECTION_GROUP = 2;
+      MONITOR_PROTECTION_GROUP = 3;
+      REPLICATION_ACTION_EXECUTION = 4;
     }
     Type type = 1;
   }
@@ -74,7 +80,7 @@ message ReplicationCapability {
   }
 }
 
-message DiscoverRemoteVolumeRequest {
+message CreateRemoteVolumeRequest {
   // Handle of the local volume, whose remote replica is being requested
   string volume_handle = 1;
   // Optional information about the local volume
@@ -83,7 +89,7 @@ message DiscoverRemoteVolumeRequest {
   map<string, string> parameters = 2;
 }
 
-message DiscoverStorageProtectionGroupRequest {
+message CreateStorageProtectionGroupRequest {
   // Handle of the volume, whose storage protection group is being requested,
   string volume_handle = 1;
   // Optional information about the Volume
@@ -92,7 +98,7 @@ message DiscoverStorageProtectionGroupRequest {
   map<string, string> parameters = 2;
 }
 
-message DiscoverStorageProtectionGroupResponse {
+message CreateStorageProtectionGroupResponse {
   // Identifier for the local storage protection group
   // This should be unique for one CSI driver
   string local_protection_group_id = 1;
@@ -106,7 +112,7 @@ message DiscoverStorageProtectionGroupResponse {
 }
 
 // Information about the remote replica of a local volume
-message DiscoverRemoteVolumeResponse {
+message CreateRemoteVolumeResponse {
   // Remote Volume
   Volume remote_volume = 1;
 }
@@ -126,10 +132,60 @@ message Volume {
 message DeleteStorageProtectionGroupRequest {
   // Unique identifier, representing the storage protection group
   string protection_group_id = 1;
-  // Attributes of the storage protection group attributes (optional)
+  // Attributes of the storage protection group (optional)
   map<string, string> protection_group_attributes = 2;
 }
 
 message DeleteStorageProtectionGroupResponse {
   // Intentionally left empty
 }
+
+message Action{
+  enum ActionTypes {
+    FAILOVER = 0;
+    FAILBACK = 1;
+    SUSPEND = 2;
+    RESUME = 3;
+    TEST_FAILOVER = 4;
+    TEST_FAILOVER_STOP = 5;
+  }
+  ActionTypes action_types = 1;
+}
+
+message ExecuteActionRequest{
+  string protection_group_id = 1;
+  oneof action_types {
+    Action action = 2;
+  }
+  map<string, string> protection_group_attributes = 3;
+}
+
+message ExecuteActionResponse{
+  bool success = 1;
+  oneof action_types {
+    Action action = 2;
+  }
+}
+message GetStorageProtectionGroupStatusRequest {
+  // Protection group to be monitored
+  string protection_group_id = 1;
+}
+
+message StorageProtectionGroupStatus {
+  enum State {
+    SYNCHRONIZED = 0;
+    SYNC_IN_PROGRESS = 1;
+    FAILED = 2;
+    UNKNOWN = 3;
+  }
+  // The state of the protection group
+  State state = 1;
+  // Optional map of storage protection group attributes
+  map<string, string> storage_protection_group_attributes = 2;
+}
+
+message GetStorageProtectionGroupStatusResponse {
+  // Returns status of the protection group
+  StorageProtectionGroupStatus status = 1;
+}
+

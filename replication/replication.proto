@@ -146,8 +146,9 @@ message Action{
     FAILBACK = 1;
     SUSPEND = 2;
     RESUME = 3;
-    TEST_FAILOVER = 4;
-    TEST_FAILOVER_STOP = 5;
+    ESTABLISH = 4;
+    TEST_FAILOVER = 5;
+    TEST_FAILOVER_STOP = 6;
   }
   ActionTypes action_types = 1;
 }
@@ -169,14 +170,17 @@ message ExecuteActionResponse{
 message GetStorageProtectionGroupStatusRequest {
   // Protection group to be monitored
   string protection_group_id = 1;
+  map<string, string> protection_group_attributes = 2;
 }
 
 message StorageProtectionGroupStatus {
   enum State {
     SYNCHRONIZED = 0;
     SYNC_IN_PROGRESS = 1;
-    FAILED = 2;
-    UNKNOWN = 3;
+    SUSPENDED = 2;
+    FAILEDOVER = 3;
+    INVALID = 4;
+    UNKNOWN = 5;
   }
   // The state of the protection group
   State state = 1;

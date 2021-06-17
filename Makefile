@@ -1,4 +1,4 @@
-all: clean replication podmon
+all: clean replication podmon volumeGroupSnapshot
 
 ########################################################################
 ##                             GOLANG                                 ##
@@ -89,8 +89,12 @@ podmon: $(PROTOC) $(PROTOC_GEN_GO)
 	$(PWD)/$(PROTOC) -I $(PROTO_INCLUDE) --go_out=plugins=grpc:"$@" --proto_path="$@" ./"$@"/"$@".proto
 	(cd "$@"; go mod tidy; go build "$@".pb.go)
 
+volumeGroupSnapshot: $(PROTOC) $(PROTOC_GEN_GO)
+	$(PWD)/$(PROTOC) -I $(PROTO_INCLUDE) --go_out=plugins=grpc:"$@" --proto_path="$@" ./"$@"/"$@".proto
+	(cd "$@"; go mod tidy; go build "$@".pb.go)
+
 clean:
-	rm -rf ./replication/replication.pb.go ./podmon/podmon.pb.go
+	rm -rf ./replication/replication.pb.go ./podmon/podmon.pb.go ./volumeGroupSnapshot/volumeGroupSnapshot.pb.go
 
 clobber: clean
 	rm -rf "$(PROTOC)" "$(PROTOC_GEN_GO)" "$(PROTOC_TMP_DIR)"

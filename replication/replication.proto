@@ -57,6 +57,7 @@ message GetReplicationCapabilityRequest {
 // RPC calls it supports
 message GetReplicationCapabilityResponse {
   repeated ReplicationCapability capabilities = 1;
+  repeated SupportedActions actions = 2;
 }
 
 // ReplicationCapability is the set of replication capabilities
@@ -77,6 +78,14 @@ message ReplicationCapability {
   }
   oneof type {
     RPC rpc = 1;
+  }
+}
+
+// SupportedActions is the set of action types
+// which are supported by a specific CSI driver
+message SupportedActions {
+  oneof Actions {
+    ActionTypes type = 1;
   }
 }
 
@@ -109,6 +118,8 @@ message CreateStorageProtectionGroupResponse {
   map<string, string> local_protection_group_attributes = 3;
   // Attributes for the remote storage protection group
   map<string, string> remote_protection_group_attributes = 4;
+  // status of the protection group
+  StorageProtectionGroupStatus status = 5;
 }
 
 // Information about the remote replica of a local volume
@@ -140,25 +151,74 @@ message DeleteStorageProtectionGroupResponse {
   // Intentionally left empty
 }
 
+// ActionTypes are the exhaustive set of actions which can be performed on
+// the protection group
+enum ActionTypes {
+  // Site-Aware actions
+  UNKNOWN_ACTION = 0;
+  // Failover - Write disable source device, suspend replication and make the target device ReadWrite
+  // Swap personalities of source and target device
+  // Failover to the local protection group (storage array)
+  FAILOVER_LOCAL = 1;
+  // Failover to the remote protection group (storage array)
+  FAILOVER_REMOTE = 2;
+
+  // Unplanned Failover
+  // Same as Failover but used in case of disaster
+  // Unplanned failover to the local storage array
+  UNPLANNED_FAILOVER_LOCAL = 3;
+  // Unplanned failover to the remote storage array
+  UNPLANNED_FAILOVER_REMOTE = 4;
+
+  // Reprotect
+  // Restart the replication in reverse direction
+  // Resume replication from local -> remote storage array
+  REPROTECT_LOCAL = 5;
+  // Resume replication from remote -> local storage array
+  REPROTECT_REMOTE = 6;
+
+  // Same as Failover but don't swap source & target devices
+  FAILOVER_WITHOUT_SWAP_LOCAL = 7;
+  FAILOVER_WITHOUT_SWAP_REMOTE = 8;
+
+  // Failback to the source device while keeping all writes done at target device
+  FAILBACK_LOCAL = 9;
+  FAILBACK_REMOTE = 10;
+
+  // Same as Failback but keep data from source (discard any writes at target)
+  ACTION_FAILBACK_DISCARD_CHANGES_LOCAL = 11;
+  ACTION_FAILBACK_DISCARD_CHANGES_REMOTE = 12;
+
+  // Swap personalities of source and target devices
+  SWAP_LOCAL = 13;
+  SWAP_REMOTE = 14;
+
+  // Suspend the replication link
+  SUSPEND = 15;
+  // Resume the replication link
+  RESUME = 16;
+  // Copy pending tracks from source to target
+  ESTABLISH = 17;
+  // Same as ESTABLISH
+  SYNC = 18;
+  TEST_FAILOVER = 19;
+  TEST_FAILOVER_STOP = 20;
+
+}
+
 message Action{
-  enum ActionTypes {
-    FAILOVER = 0;
-    FAILBACK = 1;
-    SUSPEND = 2;
-    RESUME = 3;
-    ESTABLISH = 4;
-    TEST_FAILOVER = 5;
-    TEST_FAILOVER_STOP = 6;
-  }
   ActionTypes action_types = 1;
 }
 
 message ExecuteActionRequest{
-  string protection_group_id = 1;
+  string action_id = 1;
+  string protection_group_id = 2;
   oneof action_types {
-    Action action = 2;
+    Action action = 3;
   }
-  map<string, string> protection_group_attributes = 3;
+  map<string, string> protection_group_attributes = 4;
+  string remote_protection_group_id = 5;
+  map<string, string> remote_protection_group_attributes = 6;
 }
 
 message ExecuteActionResponse{
@@ -166,6 +226,8 @@ message ExecuteActionResponse{
   oneof action_types {
     Action action = 2;
   }
+  // status of the protection group
+  StorageProtectionGroupStatus status = 3;
 }
 message GetStorageProtectionGroupStatusRequest {
   // Protection group to be monitored
@@ -184,8 +246,7 @@ message StorageProtectionGroupStatus {
   }
   // The state of the protection group
   State state = 1;
-  // Optional map of storage protection group attributes
-  map<string, string> storage_protection_group_attributes = 2;
+  bool isSource = 2;
 }
 
 message GetStorageProtectionGroupStatusResponse {

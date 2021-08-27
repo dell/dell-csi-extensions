@@ -20,7 +20,7 @@ export GOPATH
 
 # Only set PROTOC_VER if it has an empty value.
 ifeq (,$(strip $(PROTOC_VER)))
-PROTOC_VER := 3.14.0
+PROTOC_VER := 3.15.0
 endif
 
 PROTOC_OS := $(shell uname -s)
@@ -59,18 +59,10 @@ $(PROTOC):
 
 # This is the recipe for getting and installing the go plug-in
 # for protoc
-PROTOC_GEN_GO_PKG := github.com/golang/protobuf/protoc-gen-go
 PROTOC_GEN_GO := protoc-gen-go
-$(PROTOC_GEN_GO): PROTOBUF_PKG := $(dir $(PROTOC_GEN_GO_PKG))
-$(PROTOC_GEN_GO): PROTOBUF_VERSION := v1.5.2
 $(PROTOC_GEN_GO):
-	mkdir -p $(dir $(GOPATH)/src/$(PROTOBUF_PKG))
-	test -d $(GOPATH)/src/$(PROTOBUF_PKG)/.git || git clone https://$(PROTOBUF_PKG) $(GOPATH)/src/$(PROTOBUF_PKG)
-	(cd $(GOPATH)/src/$(PROTOBUF_PKG) && \
-		(test "$$(git describe --tags | head -1)" = "$(PROTOBUF_VERSION)" || \
-			(git fetch && git checkout tags/$(PROTOBUF_VERSION))))
-	(cd $(GOPATH)/src/$(PROTOBUF_PKG) && go get -v -d $$(go list -f '{{ .ImportPath }}' ./...) && \
-	go build -o "$(PWD)/$@" $(PROTOC_GEN_GO_PKG))
+	go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.26
+	go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.1
 
 ########################################################################
 ##                              PATH                                  ##
@@ -81,20 +73,23 @@ $(PROTOC_GEN_GO):
 # directory.
 export PATH := $(shell pwd):$(PATH)
 
+.PHONY: replication
 replication: $(PROTOC) $(PROTOC_GEN_GO)
-	$(PWD)/$(PROTOC) -I $(PROTO_INCLUDE) --go_out=plugins=grpc:"$@" --proto_path="$@" ./"$@"/"$@".proto
+	$(PWD)/$(PROTOC) -I $(PROTO_INCLUDE) --go_out="$@" --go_opt=paths=source_relative --go-grpc_out=require_unimplemented_servers=false:"$@" --go-grpc_opt=paths=source_relative  --proto_path="$@" ./"$@"/"$@".proto
 	(cd "$@"; go mod tidy; go build "$@".pb.go)
 
+.PHONY: podmon
 podmon: $(PROTOC) $(PROTOC_GEN_GO)
-	$(PWD)/$(PROTOC) -I $(PROTO_INCLUDE) --go_out=plugins=grpc:"$@" --proto_path="$@" ./"$@"/"$@".proto
+	$(PWD)/$(PROTOC) -I $(PROTO_INCLUDE) --go_out="$@" --go_opt=paths=source_relative --go-grpc_out=require_unimplemented_servers=false:"$@" --go-grpc_opt=paths=source_relative  --proto_path="$@" ./"$@"/"$@".proto
 	(cd "$@"; go mod tidy; go build "$@".pb.go)
 
+.PHONY: volumeGroupSnapshot
 volumeGroupSnapshot: $(PROTOC) $(PROTOC_GEN_GO)
-	$(PWD)/$(PROTOC) -I $(PROTO_INCLUDE) --go_out=plugins=grpc:"$@" --proto_path="$@" ./"$@"/"$@".proto
+	$(PWD)/$(PROTOC) -I $(PROTO_INCLUDE) --go_out="$@" --go_opt=paths=source_relative --go-grpc_out=require_unimplemented_servers=false:"$@" --go-grpc_opt=paths=source_relative  --proto_path="$@" ./"$@"/"$@".proto
 	(cd "$@"; go mod tidy; go build "$@".pb.go)
 
 clean:
-	rm -rf ./replication/replication.pb.go ./podmon/podmon.pb.go ./volumeGroupSnapshot/volumeGroupSnapshot.pb.go
+	rm -rf ./replication/replication.pb.go ./replication/replication_grpc.pb.go ./podmon/podmon.pb.go ./podmon/podmon_grpc.pb.go ./volumeGroupSnapshot/volumeGroupSnapshot.pb.go ./volumeGroupSnapshot/volumeGroupSnapshot_grpc.pb.go
 
 clobber: clean
 	rm -rf "$(PROTOC)" "$(PROTOC_GEN_GO)" "$(PROTOC_TMP_DIR)"

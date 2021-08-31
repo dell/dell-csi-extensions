@@ -1,7 +1,7 @@
 syntax = "proto3";
 package podmon.v1;
 
-option go_package = ".;podmon";
+option go_package = "./;podmon";
 
 // Proprietary Extensions to CSI drivers, formatted and handled similar to CSI requests.
 service Podmon {

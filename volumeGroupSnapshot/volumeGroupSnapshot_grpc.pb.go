@@ -18,6 +18,8 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type VolumeGroupSnapshotClient interface {
+	// ProbeController is used to probe driver name by making grpc calls
+	ProbeController(ctx context.Context, in *ProbeControllerRequest, opts ...grpc.CallOption) (*ProbeControllerResponse, error)
 	// CreateVolumeGroupSnapshot will take in a CreateVolumeGroupSnapshotRequest that will contain:
 	// 1. An array of volume IDs to be snapped for the volume snapshot group
 	// 2. A name for the volume snapshot group
@@ -36,9 +38,18 @@ func NewVolumeGroupSnapshotClient(cc grpc.ClientConnInterface) VolumeGroupSnapsh
 	return &volumeGroupSnapshotClient{cc}
 }
 
+func (c *volumeGroupSnapshotClient) ProbeController(ctx context.Context, in *ProbeControllerRequest, opts ...grpc.CallOption) (*ProbeControllerResponse, error) {
+	out := new(ProbeControllerResponse)
+	err := c.cc.Invoke(ctx, "/volumegroupsnapshot.v1alpha2.VolumeGroupSnapshot/ProbeController", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *volumeGroupSnapshotClient) CreateVolumeGroupSnapshot(ctx context.Context, in *CreateVolumeGroupSnapshotRequest, opts ...grpc.CallOption) (*CreateVolumeGroupSnapshotResponse, error) {
 	out := new(CreateVolumeGroupSnapshotResponse)
-	err := c.cc.Invoke(ctx, "/volumegroupsnapshot.v1alpha1.VolumeGroupSnapshot/CreateVolumeGroupSnapshot", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/volumegroupsnapshot.v1alpha2.VolumeGroupSnapshot/CreateVolumeGroupSnapshot", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -47,7 +58,7 @@ func (c *volumeGroupSnapshotClient) CreateVolumeGroupSnapshot(ctx context.Contex
 
 func (c *volumeGroupSnapshotClient) DeleteVolumeGroupSnapshot(ctx context.Context, in *DeleteVolumeGroupSnapshotRequest, opts ...grpc.CallOption) (*DeleteVolumeGroupSnapshotResponse, error) {
 	out := new(DeleteVolumeGroupSnapshotResponse)
-	err := c.cc.Invoke(ctx, "/volumegroupsnapshot.v1alpha1.VolumeGroupSnapshot/DeleteVolumeGroupSnapshot", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/volumegroupsnapshot.v1alpha2.VolumeGroupSnapshot/DeleteVolumeGroupSnapshot", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -58,6 +69,8 @@ func (c *volumeGroupSnapshotClient) DeleteVolumeGroupSnapshot(ctx context.Contex
 // All implementations should embed UnimplementedVolumeGroupSnapshotServer
 // for forward compatibility
 type VolumeGroupSnapshotServer interface {
+	// ProbeController is used to probe driver name by making grpc calls
+	ProbeController(context.Context, *ProbeControllerRequest) (*ProbeControllerResponse, error)
 	// CreateVolumeGroupSnapshot will take in a CreateVolumeGroupSnapshotRequest that will contain:
 	// 1. An array of volume IDs to be snapped for the volume snapshot group
 	// 2. A name for the volume snapshot group
@@ -72,6 +85,9 @@ type VolumeGroupSnapshotServer interface {
 type UnimplementedVolumeGroupSnapshotServer struct {
 }
 
+func (UnimplementedVolumeGroupSnapshotServer) ProbeController(context.Context, *ProbeControllerRequest) (*ProbeControllerResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ProbeController not implemented")
+}
 func (UnimplementedVolumeGroupSnapshotServer) CreateVolumeGroupSnapshot(context.Context, *CreateVolumeGroupSnapshotRequest) (*CreateVolumeGroupSnapshotResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateVolumeGroupSnapshot not implemented")
 }
@@ -90,6 +106,24 @@ func RegisterVolumeGroupSnapshotServer(s grpc.ServiceRegistrar, srv VolumeGroupS
 	s.RegisterService(&VolumeGroupSnapshot_ServiceDesc, srv)
 }
 
+func _VolumeGroupSnapshot_ProbeController_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ProbeControllerRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(VolumeGroupSnapshotServer).ProbeController(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/volumegroupsnapshot.v1alpha2.VolumeGroupSnapshot/ProbeController",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(VolumeGroupSnapshotServer).ProbeController(ctx, req.(*ProbeControllerRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _VolumeGroupSnapshot_CreateVolumeGroupSnapshot_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(CreateVolumeGroupSnapshotRequest)
 	if err := dec(in); err != nil {
@@ -100,7 +134,7 @@ func _VolumeGroupSnapshot_CreateVolumeGroupSnapshot_Handler(srv interface{}, ctx
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/volumegroupsnapshot.v1alpha1.VolumeGroupSnapshot/CreateVolumeGroupSnapshot",
+		FullMethod: "/volumegroupsnapshot.v1alpha2.VolumeGroupSnapshot/CreateVolumeGroupSnapshot",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(VolumeGroupSnapshotServer).CreateVolumeGroupSnapshot(ctx, req.(*CreateVolumeGroupSnapshotRequest))
@@ -118,7 +152,7 @@ func _VolumeGroupSnapshot_DeleteVolumeGroupSnapshot_Handler(srv interface{}, ctx
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/volumegroupsnapshot.v1alpha1.VolumeGroupSnapshot/DeleteVolumeGroupSnapshot",
+		FullMethod: "/volumegroupsnapshot.v1alpha2.VolumeGroupSnapshot/DeleteVolumeGroupSnapshot",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(VolumeGroupSnapshotServer).DeleteVolumeGroupSnapshot(ctx, req.(*DeleteVolumeGroupSnapshotRequest))
@@ -130,9 +164,13 @@ func _VolumeGroupSnapshot_DeleteVolumeGroupSnapshot_Handler(srv interface{}, ctx
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var VolumeGroupSnapshot_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "volumegroupsnapshot.v1alpha1.VolumeGroupSnapshot",
+	ServiceName: "volumegroupsnapshot.v1alpha2.VolumeGroupSnapshot",
 	HandlerType: (*VolumeGroupSnapshotServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "ProbeController",
+			Handler:    _VolumeGroupSnapshot_ProbeController_Handler,
+		},
 		{
 			MethodName: "CreateVolumeGroupSnapshot",
 			Handler:    _VolumeGroupSnapshot_CreateVolumeGroupSnapshot_Handler,

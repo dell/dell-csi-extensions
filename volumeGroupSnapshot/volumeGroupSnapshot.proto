@@ -1,5 +1,5 @@
 syntax = "proto3";
-package volumegroupsnapshot.v1alpha2;
+package volumegroupsnapshot.v1;
 
 option go_package = "./;volumegroupsnapshot";
 
@@ -15,10 +15,6 @@ service VolumeGroupSnapshot {
 	// It will return a CreateVolumeGroupSnapshotResponse, which contains an array of snapshots, and an id for the group  
 	rpc CreateVolumeGroupSnapshot(CreateVolumeGroupSnapshotRequest)
 	returns (CreateVolumeGroupSnapshotResponse) {}
-
-	// DeleteVolumeGroupSnapshot will be used to delete a VolumeGroupSnapshot
-	rpc DeleteVolumeGroupSnapshot(DeleteVolumeGroupSnapshotRequest)
-	returns (DeleteVolumeGroupSnapshotResponse) {}
 
 }
 
@@ -44,14 +40,6 @@ message CreateVolumeGroupSnapshotResponse {
 	//time VGS was created
 	int64 CreationTime = 3; 
 
-}
-
-message DeleteVolumeGroupSnapshotRequest {
-	string SnapshotGroupID = 1;  
-}
-
-message DeleteVolumeGroupSnapshotResponse {
-	// left empty 
 }
 
 message Snapshot {

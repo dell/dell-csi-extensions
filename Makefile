@@ -1,4 +1,4 @@
-all: clean replication podmon volumeGroupSnapshot
+all: clean common replication podmon volumeGroupSnapshot
 
 ########################################################################
 ##                             GOLANG                                 ##
@@ -75,7 +75,7 @@ export PATH := $(shell pwd):$(PATH)
 
 .PHONY: replication
 replication: $(PROTOC) $(PROTOC_GEN_GO)
-	$(PWD)/$(PROTOC) -I $(PROTO_INCLUDE) --go_out="$@" --go_opt=paths=source_relative --go-grpc_out=require_unimplemented_servers=false:"$@" --go-grpc_opt=paths=source_relative  --proto_path="$@" ./"$@"/"$@".proto
+	$(PWD)/$(PROTOC) -I $(PROTO_INCLUDE) -I ./common --go_out="$@" --go_opt=paths=source_relative --go-grpc_out=require_unimplemented_servers=false:"$@" --go-grpc_opt=paths=source_relative  --proto_path="$@" ./"$@"/"$@".proto
 	(cd "$@"; go mod tidy; go build "$@".pb.go)
 
 .PHONY: podmon
@@ -85,6 +85,11 @@ podmon: $(PROTOC) $(PROTOC_GEN_GO)
 
 .PHONY: volumeGroupSnapshot
 volumeGroupSnapshot: $(PROTOC) $(PROTOC_GEN_GO)
+	$(PWD)/$(PROTOC) -I $(PROTO_INCLUDE) -I ./common --go_out="$@" --go_opt=paths=source_relative --go-grpc_out=require_unimplemented_servers=false:"$@" --go-grpc_opt=paths=source_relative  --proto_path="$@" ./"$@"/"$@".proto
+	(cd "$@"; go mod tidy; go build "$@".pb.go)
+
+.PHONY: common
+common: $(PROTOC) $(PROTOC_GEN_GO)
 	$(PWD)/$(PROTOC) -I $(PROTO_INCLUDE) --go_out="$@" --go_opt=paths=source_relative --go-grpc_out=require_unimplemented_servers=false:"$@" --go-grpc_opt=paths=source_relative  --proto_path="$@" ./"$@"/"$@".proto
 	(cd "$@"; go mod tidy; go build "$@".pb.go)
 

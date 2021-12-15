@@ -1,13 +1,15 @@
 syntax = "proto3";
 package volumegroupsnapshot.v1;
 
+import "common.proto";
+
 option go_package = "./;volumegroupsnapshot";
 
 service VolumeGroupSnapshot {
 
 	// ProbeController is used to probe driver name by making grpc calls
-	rpc ProbeController(ProbeControllerRequest)
-		returns (ProbeControllerResponse) {}
+	rpc ProbeController(common.v1.ProbeControllerRequest)
+		returns (common.v1.ProbeControllerResponse) {}
 	// CreateVolumeGroupSnapshot will take in a CreateVolumeGroupSnapshotRequest that will contain:
 	// 1. An array of volume IDs to be snapped for the volume snapshot group
 	// 2. A name for the volume snapshot group
@@ -63,18 +65,3 @@ message Snapshot {
 
 }
 
-message ProbeControllerRequest {
-	// left empty
-}
-
-// Metadata about the driver 
-// for accepting the RPC calls
-message ProbeControllerResponse {
-	// Name of the driver
-	string name = 1;
-
-	// Version of CSI driver
-	string vendor_version = 2;
-
-	map<string, string> manifest = 3;
-}

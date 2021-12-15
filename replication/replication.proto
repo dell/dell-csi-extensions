@@ -1,14 +1,14 @@
 syntax = "proto3";
 package replication.v1alpha1;
 
-import "google/protobuf/wrappers.proto";
+import "common.proto";
 
 option go_package = "./;replication";
 
 service Replication {
   // ProbeController is used to verify if the CSI driver controller plugin is ready to service Replication APIs
-  rpc ProbeController(ProbeControllerRequest)
-      returns (ProbeControllerResponse) {}
+  rpc ProbeController(common.v1.ProbeControllerRequest)
+      returns (common.v1.ProbeControllerResponse) {}
   // GetReplicationCapabilities is used to query CSI drivers for their supported replication capabilities
   rpc GetReplicationCapabilities(GetReplicationCapabilityRequest)
       returns (GetReplicationCapabilityResponse) {}
@@ -27,25 +27,6 @@ service Replication {
   // GetStorageProtectionGroupStatus is used to monitor the status of Storage Protection groups
   rpc GetStorageProtectionGroupStatus(GetStorageProtectionGroupStatusRequest)
       returns (GetStorageProtectionGroupStatusResponse) {}
-}
-
-message ProbeControllerRequest {
-  // Intentionally left empty
-}
-
-// Metadata about the driver and its readiness
-// for accepting the RPC calls.
-message ProbeControllerResponse {
-  // Name of the driver
-  // This should be the same name which is advertised
-  // to the CSI external provisioner
-  string name = 1;
-  // Version of the CSI driver
-  string vendor_version = 2;
-
-  map<string, string> manifest = 3;
-
-  .google.protobuf.BoolValue ready = 4;
 }
 
 // Input request used in GetReplicationCapabilities API

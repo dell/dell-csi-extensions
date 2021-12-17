@@ -4,6 +4,7 @@ package volumegroupsnapshot
 
 import (
 	context "context"
+	common "github.com/dell/dell-csi-extensions/common"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -19,7 +20,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type VolumeGroupSnapshotClient interface {
 	// ProbeController is used to probe driver name by making grpc calls
-	ProbeController(ctx context.Context, in *ProbeControllerRequest, opts ...grpc.CallOption) (*ProbeControllerResponse, error)
+	ProbeController(ctx context.Context, in *common.ProbeControllerRequest, opts ...grpc.CallOption) (*common.ProbeControllerResponse, error)
 	// CreateVolumeGroupSnapshot will take in a CreateVolumeGroupSnapshotRequest that will contain:
 	// 1. An array of volume IDs to be snapped for the volume snapshot group
 	// 2. A name for the volume snapshot group
@@ -36,8 +37,8 @@ func NewVolumeGroupSnapshotClient(cc grpc.ClientConnInterface) VolumeGroupSnapsh
 	return &volumeGroupSnapshotClient{cc}
 }
 
-func (c *volumeGroupSnapshotClient) ProbeController(ctx context.Context, in *ProbeControllerRequest, opts ...grpc.CallOption) (*ProbeControllerResponse, error) {
-	out := new(ProbeControllerResponse)
+func (c *volumeGroupSnapshotClient) ProbeController(ctx context.Context, in *common.ProbeControllerRequest, opts ...grpc.CallOption) (*common.ProbeControllerResponse, error) {
+	out := new(common.ProbeControllerResponse)
 	err := c.cc.Invoke(ctx, "/volumegroupsnapshot.v1.VolumeGroupSnapshot/ProbeController", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -59,7 +60,7 @@ func (c *volumeGroupSnapshotClient) CreateVolumeGroupSnapshot(ctx context.Contex
 // for forward compatibility
 type VolumeGroupSnapshotServer interface {
 	// ProbeController is used to probe driver name by making grpc calls
-	ProbeController(context.Context, *ProbeControllerRequest) (*ProbeControllerResponse, error)
+	ProbeController(context.Context, *common.ProbeControllerRequest) (*common.ProbeControllerResponse, error)
 	// CreateVolumeGroupSnapshot will take in a CreateVolumeGroupSnapshotRequest that will contain:
 	// 1. An array of volume IDs to be snapped for the volume snapshot group
 	// 2. A name for the volume snapshot group
@@ -72,7 +73,7 @@ type VolumeGroupSnapshotServer interface {
 type UnimplementedVolumeGroupSnapshotServer struct {
 }
 
-func (UnimplementedVolumeGroupSnapshotServer) ProbeController(context.Context, *ProbeControllerRequest) (*ProbeControllerResponse, error) {
+func (UnimplementedVolumeGroupSnapshotServer) ProbeController(context.Context, *common.ProbeControllerRequest) (*common.ProbeControllerResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ProbeController not implemented")
 }
 func (UnimplementedVolumeGroupSnapshotServer) CreateVolumeGroupSnapshot(context.Context, *CreateVolumeGroupSnapshotRequest) (*CreateVolumeGroupSnapshotResponse, error) {
@@ -91,7 +92,7 @@ func RegisterVolumeGroupSnapshotServer(s grpc.ServiceRegistrar, srv VolumeGroupS
 }
 
 func _VolumeGroupSnapshot_ProbeController_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ProbeControllerRequest)
+	in := new(common.ProbeControllerRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -103,7 +104,7 @@ func _VolumeGroupSnapshot_ProbeController_Handler(srv interface{}, ctx context.C
 		FullMethod: "/volumegroupsnapshot.v1.VolumeGroupSnapshot/ProbeController",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(VolumeGroupSnapshotServer).ProbeController(ctx, req.(*ProbeControllerRequest))
+		return srv.(VolumeGroupSnapshotServer).ProbeController(ctx, req.(*common.ProbeControllerRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }

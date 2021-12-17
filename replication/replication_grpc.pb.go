@@ -4,6 +4,7 @@ package replication
 
 import (
 	context "context"
+	common "github.com/dell/dell-csi-extensions/common"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -19,7 +20,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ReplicationClient interface {
 	// ProbeController is used to verify if the CSI driver controller plugin is ready to service Replication APIs
-	ProbeController(ctx context.Context, in *ProbeControllerRequest, opts ...grpc.CallOption) (*ProbeControllerResponse, error)
+	ProbeController(ctx context.Context, in *common.ProbeControllerRequest, opts ...grpc.CallOption) (*common.ProbeControllerResponse, error)
 	// GetReplicationCapabilities is used to query CSI drivers for their supported replication capabilities
 	GetReplicationCapabilities(ctx context.Context, in *GetReplicationCapabilityRequest, opts ...grpc.CallOption) (*GetReplicationCapabilityResponse, error)
 	// CreateStorageProtectionGroup is used to create Storage Protection Group on array
@@ -42,8 +43,8 @@ func NewReplicationClient(cc grpc.ClientConnInterface) ReplicationClient {
 	return &replicationClient{cc}
 }
 
-func (c *replicationClient) ProbeController(ctx context.Context, in *ProbeControllerRequest, opts ...grpc.CallOption) (*ProbeControllerResponse, error) {
-	out := new(ProbeControllerResponse)
+func (c *replicationClient) ProbeController(ctx context.Context, in *common.ProbeControllerRequest, opts ...grpc.CallOption) (*common.ProbeControllerResponse, error) {
+	out := new(common.ProbeControllerResponse)
 	err := c.cc.Invoke(ctx, "/replication.v1alpha1.Replication/ProbeController", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -110,7 +111,7 @@ func (c *replicationClient) GetStorageProtectionGroupStatus(ctx context.Context,
 // for forward compatibility
 type ReplicationServer interface {
 	// ProbeController is used to verify if the CSI driver controller plugin is ready to service Replication APIs
-	ProbeController(context.Context, *ProbeControllerRequest) (*ProbeControllerResponse, error)
+	ProbeController(context.Context, *common.ProbeControllerRequest) (*common.ProbeControllerResponse, error)
 	// GetReplicationCapabilities is used to query CSI drivers for their supported replication capabilities
 	GetReplicationCapabilities(context.Context, *GetReplicationCapabilityRequest) (*GetReplicationCapabilityResponse, error)
 	// CreateStorageProtectionGroup is used to create Storage Protection Group on array
@@ -129,7 +130,7 @@ type ReplicationServer interface {
 type UnimplementedReplicationServer struct {
 }
 
-func (UnimplementedReplicationServer) ProbeController(context.Context, *ProbeControllerRequest) (*ProbeControllerResponse, error) {
+func (UnimplementedReplicationServer) ProbeController(context.Context, *common.ProbeControllerRequest) (*common.ProbeControllerResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ProbeController not implemented")
 }
 func (UnimplementedReplicationServer) GetReplicationCapabilities(context.Context, *GetReplicationCapabilityRequest) (*GetReplicationCapabilityResponse, error) {
@@ -163,7 +164,7 @@ func RegisterReplicationServer(s grpc.ServiceRegistrar, srv ReplicationServer) {
 }
 
 func _Replication_ProbeController_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ProbeControllerRequest)
+	in := new(common.ProbeControllerRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -175,7 +176,7 @@ func _Replication_ProbeController_Handler(srv interface{}, ctx context.Context, 
 		FullMethod: "/replication.v1alpha1.Replication/ProbeController",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ReplicationServer).ProbeController(ctx, req.(*ProbeControllerRequest))
+		return srv.(ReplicationServer).ProbeController(ctx, req.(*common.ProbeControllerRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }

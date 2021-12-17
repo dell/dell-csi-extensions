@@ -1,0 +1,25 @@
+syntax = "proto3";
+package common.v1;
+
+import "google/protobuf/wrappers.proto";
+
+option go_package = "github.com/dell/dell-csi-extensions/common";
+
+
+message ProbeControllerRequest {
+	// Intentionally left empty
+}
+
+// Metadata about the driver 
+// for accepting the RPC calls
+message ProbeControllerResponse {
+	// Name of the driver
+	string name = 1;
+
+	// Version of CSI driver
+	string vendor_version = 2;
+
+	map<string, string> manifest = 3;
+
+	.google.protobuf.BoolValue ready = 4;
+}

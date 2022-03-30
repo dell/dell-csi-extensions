@@ -25,10 +25,12 @@ message CreateVolumeGroupSnapshotRequest {
 	repeated string SourceVolumeIDs = 1;
  
 	// name of snapshot group
-	string Name = 2; 
+	string Name = 2;
+	
+	string Description = 3;	
 
 	// parameters map from VolumeGroupSnapshot instance
-	map<string, string> Parameters = 3; 
+	map<string, string> Parameters = 5; 
 
 } 
 

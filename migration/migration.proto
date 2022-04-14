@@ -38,7 +38,10 @@ message Volume {
   string volume_id = 2;
   // Optional context information about the volume
   // which can be passed down to the driver in future calls
-  map<string, string> volume_context = 3;
+  string fs_type = 3;
+  bool read_only = 4;
+  repeated string mount_options = 5;
+  map<string, string> volume_context = 6;
 }
 
 message VolumeMigrateRequest {

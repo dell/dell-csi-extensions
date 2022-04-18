@@ -1,0 +1,64 @@
+syntax = "proto3";
+package migration.v1alpha1;
+
+option go_package = "./;migration";
+
+service Migration{
+  rpc VolumeMigrate(VolumeMigrateRequest)
+      returns (VolumeMigrateResponse) {}
+  // GetMigrationCapabilities is used to query CSI drivers for their supported migration capabilities
+  rpc GetMigrationCapabilities(GetMigrationCapabilityRequest)
+      returns (GetMigrationCapabilityResponse) {}
+}
+
+// Input request used in GetMigrationCapabilities API
+message GetMigrationCapabilityRequest {
+  // Intentionally left empty
+}
+message MigrationCapability {
+  message RPC {
+    MigrateTypes type = 1;
+  }
+  oneof type {
+    RPC rpc = 1;
+  }
+}
+// Capabilities of the driver, in terms of the
+// RPC calls it supports
+message GetMigrationCapabilityResponse {
+  repeated MigrationCapability capabilities = 1;
+}
+
+// Information about a specific volume
+message Volume {
+  // Size of the volume in bytes
+  int64 capacity_bytes = 1;
+  // Volume ID - should be the same as one
+  // returned in the CSI CreateVolumeResponse
+  string volume_id = 2;
+  // Optional context information about the volume
+  // which can be passed down to the driver in future calls
+  string fs_type = 3;
+  bool read_only = 4;
+  repeated string mount_options = 5;
+  map<string, string> volume_context = 6;
+}
+
+message VolumeMigrateRequest {
+  string volume_handle = 1;
+  string storage_class = 2;
+  oneof migrate_types {
+    MigrateTypes type = 3;
+  }
+  map<string, string> sc_parameters = 4;
+  bool should_clone = 5;
+}
+message VolumeMigrateResponse{
+  Volume migrated_volume = 1;
+}
+enum MigrateTypes {
+  UNKNOWN_MIGRATE = 0;
+  NON_REPL_TO_REPL = 1;
+  REPL_TO_NON_REPL = 2;
+  VERSION_UPGRADE = 3;
+}

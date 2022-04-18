@@ -1,4 +1,4 @@
-all: clean common replication podmon volumeGroupSnapshot
+all: clean common replication podmon volumeGroupSnapshot migration
 
 ########################################################################
 ##                             GOLANG                                 ##
@@ -20,7 +20,7 @@ export GOPATH
 
 # Only set PROTOC_VER if it has an empty value.
 ifeq (,$(strip $(PROTOC_VER)))
-PROTOC_VER := 3.15.0
+PROTOC_VER := 3.20.0
 endif
 
 PROTOC_OS := $(shell uname -s)
@@ -33,6 +33,10 @@ ifeq (i386,$(PROTOC_ARCH))
 PROTOC_ARCH := x86_32
 endif
 
+ifeq (arm64osx,$(PROTOC_ARCH)$(PROTOC_OS))
+PROTOC_ARCH := aarch_64
+endif
+
 PROTOC := ./protoc
 PROTO_INCLUDE=.protoc/include
 
@@ -40,7 +44,6 @@ PROTOC_ZIP := protoc-$(PROTOC_VER)-$(PROTOC_OS)-$(PROTOC_ARCH).zip
 ifeq (,$(strip $(PROTOC_OS)))
 	PROTOC_ZIP := protoc-$(PROTOC_VER)-win64.zip
 endif
-
 PROTOC_URL := https://github.com/google/protobuf/releases/download/v$(PROTOC_VER)/$(PROTOC_ZIP)
 PROTOC_TMP_DIR := .protoc
 PROTOC_TMP_BIN := $(PROTOC_TMP_DIR)/bin/protoc
@@ -75,6 +78,11 @@ export PATH := $(shell pwd):$(PATH)
 
 .PHONY: replication
 replication: $(PROTOC) $(PROTOC_GEN_GO)
+	$(PWD)/$(PROTOC) -I $(PROTO_INCLUDE) -I ./common --go_out="$@" --go_opt=paths=source_relative --go-grpc_out=require_unimplemented_servers=false:"$@" --go-grpc_opt=paths=source_relative  --proto_path="$@" ./"$@"/"$@".proto
+	(cd "$@"; go mod tidy; go build "$@".pb.go)
+
+.PHONY: migration
+migration: $(PROTOC) $(PROTOC_GEN_GO)
 	$(PWD)/$(PROTOC) -I $(PROTO_INCLUDE) -I ./common --go_out="$@" --go_opt=paths=source_relative --go-grpc_out=require_unimplemented_servers=false:"$@" --go-grpc_opt=paths=source_relative  --proto_path="$@" ./"$@"/"$@".proto
 	(cd "$@"; go mod tidy; go build "$@".pb.go)
 

@@ -27,6 +27,8 @@ type VolumeGroupSnapshotClient interface {
 	// 3. Parameters for the VolumeGroupSnapshot instance
 	// It will return a CreateVolumeGroupSnapshotResponse, which contains an array of snapshots, and an id for the group
 	CreateVolumeGroupSnapshot(ctx context.Context, in *CreateVolumeGroupSnapshotRequest, opts ...grpc.CallOption) (*CreateVolumeGroupSnapshotResponse, error)
+	// ParseVolumeHandle will take driver specific volume handles and returns back array, protocol and volume ID
+	ParseVolumeHandle(ctx context.Context, in *VolumeHandleRequest, opts ...grpc.CallOption) (*VolumeHandleResponse, error)
 }
 
 type volumeGroupSnapshotClient struct {
@@ -55,6 +57,15 @@ func (c *volumeGroupSnapshotClient) CreateVolumeGroupSnapshot(ctx context.Contex
 	return out, nil
 }
 
+func (c *volumeGroupSnapshotClient) ParseVolumeHandle(ctx context.Context, in *VolumeHandleRequest, opts ...grpc.CallOption) (*VolumeHandleResponse, error) {
+	out := new(VolumeHandleResponse)
+	err := c.cc.Invoke(ctx, "/volumegroupsnapshot.v1.VolumeGroupSnapshot/ParseVolumeHandle", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // VolumeGroupSnapshotServer is the server API for VolumeGroupSnapshot service.
 // All implementations should embed UnimplementedVolumeGroupSnapshotServer
 // for forward compatibility
@@ -67,6 +78,8 @@ type VolumeGroupSnapshotServer interface {
 	// 3. Parameters for the VolumeGroupSnapshot instance
 	// It will return a CreateVolumeGroupSnapshotResponse, which contains an array of snapshots, and an id for the group
 	CreateVolumeGroupSnapshot(context.Context, *CreateVolumeGroupSnapshotRequest) (*CreateVolumeGroupSnapshotResponse, error)
+	// ParseVolumeHandle will take driver specific volume handles and returns back array, protocol and volume ID
+	ParseVolumeHandle(context.Context, *VolumeHandleRequest) (*VolumeHandleResponse, error)
 }
 
 // UnimplementedVolumeGroupSnapshotServer should be embedded to have forward compatible implementations.
@@ -78,6 +91,9 @@ func (UnimplementedVolumeGroupSnapshotServer) ProbeController(context.Context, *
 }
 func (UnimplementedVolumeGroupSnapshotServer) CreateVolumeGroupSnapshot(context.Context, *CreateVolumeGroupSnapshotRequest) (*CreateVolumeGroupSnapshotResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateVolumeGroupSnapshot not implemented")
+}
+func (UnimplementedVolumeGroupSnapshotServer) ParseVolumeHandle(context.Context, *VolumeHandleRequest) (*VolumeHandleResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ParseVolumeHandle not implemented")
 }
 
 // UnsafeVolumeGroupSnapshotServer may be embedded to opt out of forward compatibility for this service.
@@ -127,6 +143,24 @@ func _VolumeGroupSnapshot_CreateVolumeGroupSnapshot_Handler(srv interface{}, ctx
 	return interceptor(ctx, in, info, handler)
 }
 
+func _VolumeGroupSnapshot_ParseVolumeHandle_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(VolumeHandleRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(VolumeGroupSnapshotServer).ParseVolumeHandle(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/volumegroupsnapshot.v1.VolumeGroupSnapshot/ParseVolumeHandle",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(VolumeGroupSnapshotServer).ParseVolumeHandle(ctx, req.(*VolumeHandleRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // VolumeGroupSnapshot_ServiceDesc is the grpc.ServiceDesc for VolumeGroupSnapshot service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -141,6 +175,10 @@ var VolumeGroupSnapshot_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreateVolumeGroupSnapshot",
 			Handler:    _VolumeGroupSnapshot_CreateVolumeGroupSnapshot_Handler,
+		},
+		{
+			MethodName: "ParseVolumeHandle",
+			Handler:    _VolumeGroupSnapshot_ParseVolumeHandle_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

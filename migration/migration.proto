@@ -1,9 +1,15 @@
 syntax = "proto3";
 package migration.v1alpha1;
 
+import "common.proto";
+
 option go_package = "./;migration";
 
 service Migration{
+  // ProbeController is used to verify if the CSI driver controller plugin is ready to service Replication APIs
+  rpc ProbeController(common.v1.ProbeControllerRequest)
+      returns (common.v1.ProbeControllerResponse) {}
+  // VolumeMigrate is used to migrate volume on storage array to different location/protection group
   rpc VolumeMigrate(VolumeMigrateRequest)
       returns (VolumeMigrateResponse) {}
   // GetMigrationCapabilities is used to query CSI drivers for their supported migration capabilities
@@ -39,9 +45,7 @@ message Volume {
   // Optional context information about the volume
   // which can be passed down to the driver in future calls
   string fs_type = 3;
-  bool read_only = 4;
-  repeated string mount_options = 5;
-  map<string, string> volume_context = 6;
+  map<string, string> volume_context = 4;
 }
 
 message VolumeMigrateRequest {

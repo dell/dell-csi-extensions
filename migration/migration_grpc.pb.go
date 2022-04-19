@@ -4,6 +4,7 @@ package migration
 
 import (
 	context "context"
+	common "github.com/dell/dell-csi-extensions/common"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -18,6 +19,9 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type MigrationClient interface {
+	// ProbeController is used to verify if the CSI driver controller plugin is ready to service Replication APIs
+	ProbeController(ctx context.Context, in *common.ProbeControllerRequest, opts ...grpc.CallOption) (*common.ProbeControllerResponse, error)
+	// VolumeMigrate is used to migrate volume on storage array to different location/protection group
 	VolumeMigrate(ctx context.Context, in *VolumeMigrateRequest, opts ...grpc.CallOption) (*VolumeMigrateResponse, error)
 	// GetMigrationCapabilities is used to query CSI drivers for their supported migration capabilities
 	GetMigrationCapabilities(ctx context.Context, in *GetMigrationCapabilityRequest, opts ...grpc.CallOption) (*GetMigrationCapabilityResponse, error)
@@ -29,6 +33,15 @@ type migrationClient struct {
 
 func NewMigrationClient(cc grpc.ClientConnInterface) MigrationClient {
 	return &migrationClient{cc}
+}
+
+func (c *migrationClient) ProbeController(ctx context.Context, in *common.ProbeControllerRequest, opts ...grpc.CallOption) (*common.ProbeControllerResponse, error) {
+	out := new(common.ProbeControllerResponse)
+	err := c.cc.Invoke(ctx, "/migration.v1alpha1.Migration/ProbeController", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *migrationClient) VolumeMigrate(ctx context.Context, in *VolumeMigrateRequest, opts ...grpc.CallOption) (*VolumeMigrateResponse, error) {
@@ -53,6 +66,9 @@ func (c *migrationClient) GetMigrationCapabilities(ctx context.Context, in *GetM
 // All implementations should embed UnimplementedMigrationServer
 // for forward compatibility
 type MigrationServer interface {
+	// ProbeController is used to verify if the CSI driver controller plugin is ready to service Replication APIs
+	ProbeController(context.Context, *common.ProbeControllerRequest) (*common.ProbeControllerResponse, error)
+	// VolumeMigrate is used to migrate volume on storage array to different location/protection group
 	VolumeMigrate(context.Context, *VolumeMigrateRequest) (*VolumeMigrateResponse, error)
 	// GetMigrationCapabilities is used to query CSI drivers for their supported migration capabilities
 	GetMigrationCapabilities(context.Context, *GetMigrationCapabilityRequest) (*GetMigrationCapabilityResponse, error)
@@ -62,6 +78,9 @@ type MigrationServer interface {
 type UnimplementedMigrationServer struct {
 }
 
+func (UnimplementedMigrationServer) ProbeController(context.Context, *common.ProbeControllerRequest) (*common.ProbeControllerResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ProbeController not implemented")
+}
 func (UnimplementedMigrationServer) VolumeMigrate(context.Context, *VolumeMigrateRequest) (*VolumeMigrateResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method VolumeMigrate not implemented")
 }
@@ -78,6 +97,24 @@ type UnsafeMigrationServer interface {
 
 func RegisterMigrationServer(s grpc.ServiceRegistrar, srv MigrationServer) {
 	s.RegisterService(&Migration_ServiceDesc, srv)
+}
+
+func _Migration_ProbeController_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(common.ProbeControllerRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MigrationServer).ProbeController(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/migration.v1alpha1.Migration/ProbeController",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MigrationServer).ProbeController(ctx, req.(*common.ProbeControllerRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _Migration_VolumeMigrate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -123,6 +160,10 @@ var Migration_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "migration.v1alpha1.Migration",
 	HandlerType: (*MigrationServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "ProbeController",
+			Handler:    _Migration_ProbeController_Handler,
+		},
 		{
 			MethodName: "VolumeMigrate",
 			Handler:    _Migration_VolumeMigrate_Handler,

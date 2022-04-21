@@ -17,9 +17,6 @@ service VolumeGroupSnapshot {
 	// It will return a CreateVolumeGroupSnapshotResponse, which contains an array of snapshots, and an id for the group  
 	rpc CreateVolumeGroupSnapshot(CreateVolumeGroupSnapshotRequest)
 	returns (CreateVolumeGroupSnapshotResponse) {}
-	// ParseVolumeHandle will take driver specific volume handles and returns back array, protocol and volume ID
-	rpc ParseVolumeHandle(VolumeHandleRequest)
-	returns (VolumeHandleResponse){}
 }
 
 message CreateVolumeGroupSnapshotRequest {
@@ -67,16 +64,4 @@ message Snapshot {
 	//name of snapshot found in array 
 	string Name = 6; 
 
-}
-
-message VolumeHandleRequest{
-	// VolumeHandle to be parsed
-	string VolumeHandle = 1;
-}
-
-message VolumeHandleResponse{
-	// VolumeHandle to be parsed
-	string ArrayID = 1;
-	string VolumeID = 2;
-	string Protocol = 3;
 }

@@ -224,6 +224,7 @@ message StorageProtectionGroupStatus {
     FAILEDOVER = 3;
     INVALID = 4;
     UNKNOWN = 5;
+    EMPTY = 6;
   }
   // The state of the protection group
   State state = 1;

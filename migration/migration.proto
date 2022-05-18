@@ -55,7 +55,8 @@ message VolumeMigrateRequest {
     MigrateTypes type = 3;
   }
   map<string, string> sc_parameters = 4;
-  bool should_clone = 5;
+  map<string, string> scSource_parameters = 5;
+  bool should_clone = 6;
 }
 message VolumeMigrateResponse{
   Volume migrated_volume = 1;

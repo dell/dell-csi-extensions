@@ -25,6 +25,8 @@ type MigrationClient interface {
 	VolumeMigrate(ctx context.Context, in *VolumeMigrateRequest, opts ...grpc.CallOption) (*VolumeMigrateResponse, error)
 	// GetMigrationCapabilities is used to query CSI drivers for their supported migration capabilities
 	GetMigrationCapabilities(ctx context.Context, in *GetMigrationCapabilityRequest, opts ...grpc.CallOption) (*GetMigrationCapabilityResponse, error)
+	// NodeRescan does a rescan on nodes to find new path after migration
+	NodeRescan(ctx context.Context, in *NodeRescanRequest, opts ...grpc.CallOption) (*NodeRescanResponse, error)
 }
 
 type migrationClient struct {
@@ -62,6 +64,15 @@ func (c *migrationClient) GetMigrationCapabilities(ctx context.Context, in *GetM
 	return out, nil
 }
 
+func (c *migrationClient) NodeRescan(ctx context.Context, in *NodeRescanRequest, opts ...grpc.CallOption) (*NodeRescanResponse, error) {
+	out := new(NodeRescanResponse)
+	err := c.cc.Invoke(ctx, "/migration.v1alpha1.Migration/NodeRescan", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MigrationServer is the server API for Migration service.
 // All implementations should embed UnimplementedMigrationServer
 // for forward compatibility
@@ -72,6 +83,8 @@ type MigrationServer interface {
 	VolumeMigrate(context.Context, *VolumeMigrateRequest) (*VolumeMigrateResponse, error)
 	// GetMigrationCapabilities is used to query CSI drivers for their supported migration capabilities
 	GetMigrationCapabilities(context.Context, *GetMigrationCapabilityRequest) (*GetMigrationCapabilityResponse, error)
+	// NodeRescan does a rescan on nodes to find new path after migration
+	NodeRescan(context.Context, *NodeRescanRequest) (*NodeRescanResponse, error)
 }
 
 // UnimplementedMigrationServer should be embedded to have forward compatible implementations.
@@ -86,6 +99,9 @@ func (UnimplementedMigrationServer) VolumeMigrate(context.Context, *VolumeMigrat
 }
 func (UnimplementedMigrationServer) GetMigrationCapabilities(context.Context, *GetMigrationCapabilityRequest) (*GetMigrationCapabilityResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetMigrationCapabilities not implemented")
+}
+func (UnimplementedMigrationServer) NodeRescan(context.Context, *NodeRescanRequest) (*NodeRescanResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method NodeRescan not implemented")
 }
 
 // UnsafeMigrationServer may be embedded to opt out of forward compatibility for this service.
@@ -153,6 +169,24 @@ func _Migration_GetMigrationCapabilities_Handler(srv interface{}, ctx context.Co
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Migration_NodeRescan_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(NodeRescanRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MigrationServer).NodeRescan(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/migration.v1alpha1.Migration/NodeRescan",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MigrationServer).NodeRescan(ctx, req.(*NodeRescanRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Migration_ServiceDesc is the grpc.ServiceDesc for Migration service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -171,6 +205,10 @@ var Migration_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetMigrationCapabilities",
 			Handler:    _Migration_GetMigrationCapabilities_Handler,
+		},
+		{
+			MethodName: "NodeRescan",
+			Handler:    _Migration_NodeRescan_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

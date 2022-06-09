@@ -457,6 +457,107 @@ func (x *VolumeMigrateResponse) GetMigratedVolume() *Volume {
 	return nil
 }
 
+type NodeRescanRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *NodeRescanRequest) Reset() {
+	*x = NodeRescanRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_migration_proto_msgTypes[6]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *NodeRescanRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*NodeRescanRequest) ProtoMessage() {}
+
+func (x *NodeRescanRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_migration_proto_msgTypes[6]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use NodeRescanRequest.ProtoReflect.Descriptor instead.
+func (*NodeRescanRequest) Descriptor() ([]byte, []int) {
+	return file_migration_proto_rawDescGZIP(), []int{6}
+}
+
+type NodeRescanResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	NodeId    string `protobuf:"bytes,1,opt,name=node_id,json=nodeId,proto3" json:"node_id,omitempty"`
+	NewPaths  string `protobuf:"bytes,2,opt,name=new_paths,json=newPaths,proto3" json:"new_paths,omitempty"`
+	FoundPath bool   `protobuf:"varint,3,opt,name=found_path,json=foundPath,proto3" json:"found_path,omitempty"`
+}
+
+func (x *NodeRescanResponse) Reset() {
+	*x = NodeRescanResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_migration_proto_msgTypes[7]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *NodeRescanResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*NodeRescanResponse) ProtoMessage() {}
+
+func (x *NodeRescanResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_migration_proto_msgTypes[7]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use NodeRescanResponse.ProtoReflect.Descriptor instead.
+func (*NodeRescanResponse) Descriptor() ([]byte, []int) {
+	return file_migration_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *NodeRescanResponse) GetNodeId() string {
+	if x != nil {
+		return x.NodeId
+	}
+	return ""
+}
+
+func (x *NodeRescanResponse) GetNewPaths() string {
+	if x != nil {
+		return x.NewPaths
+	}
+	return ""
+}
+
+func (x *NodeRescanResponse) GetFoundPath() bool {
+	if x != nil {
+		return x.FoundPath
+	}
+	return false
+}
+
 type MigrationCapability_RPC struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -468,7 +569,7 @@ type MigrationCapability_RPC struct {
 func (x *MigrationCapability_RPC) Reset() {
 	*x = MigrationCapability_RPC{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_migration_proto_msgTypes[6]
+		mi := &file_migration_proto_msgTypes[8]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -481,7 +582,7 @@ func (x *MigrationCapability_RPC) String() string {
 func (*MigrationCapability_RPC) ProtoMessage() {}
 
 func (x *MigrationCapability_RPC) ProtoReflect() protoreflect.Message {
-	mi := &file_migration_proto_msgTypes[6]
+	mi := &file_migration_proto_msgTypes[8]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -585,14 +686,22 @@ var file_migration_proto_rawDesc = []byte{
 	0x64, 0x5f, 0x76, 0x6f, 0x6c, 0x75, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1a,
 	0x2e, 0x6d, 0x69, 0x67, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x76, 0x31, 0x61, 0x6c, 0x70,
 	0x68, 0x61, 0x31, 0x2e, 0x56, 0x6f, 0x6c, 0x75, 0x6d, 0x65, 0x52, 0x0e, 0x6d, 0x69, 0x67, 0x72,
-	0x61, 0x74, 0x65, 0x64, 0x56, 0x6f, 0x6c, 0x75, 0x6d, 0x65, 0x2a, 0x64, 0x0a, 0x0c, 0x4d, 0x69,
+	0x61, 0x74, 0x65, 0x64, 0x56, 0x6f, 0x6c, 0x75, 0x6d, 0x65, 0x22, 0x13, 0x0a, 0x11, 0x4e, 0x6f,
+	0x64, 0x65, 0x52, 0x65, 0x73, 0x63, 0x61, 0x6e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x22,
+	0x69, 0x0a, 0x12, 0x4e, 0x6f, 0x64, 0x65, 0x52, 0x65, 0x73, 0x63, 0x61, 0x6e, 0x52, 0x65, 0x73,
+	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x17, 0x0a, 0x07, 0x6e, 0x6f, 0x64, 0x65, 0x5f, 0x69, 0x64,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x6e, 0x6f, 0x64, 0x65, 0x49, 0x64, 0x12, 0x1b,
+	0x0a, 0x09, 0x6e, 0x65, 0x77, 0x5f, 0x70, 0x61, 0x74, 0x68, 0x73, 0x18, 0x02, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x08, 0x6e, 0x65, 0x77, 0x50, 0x61, 0x74, 0x68, 0x73, 0x12, 0x1d, 0x0a, 0x0a, 0x66,
+	0x6f, 0x75, 0x6e, 0x64, 0x5f, 0x70, 0x61, 0x74, 0x68, 0x18, 0x03, 0x20, 0x01, 0x28, 0x08, 0x52,
+	0x09, 0x66, 0x6f, 0x75, 0x6e, 0x64, 0x50, 0x61, 0x74, 0x68, 0x2a, 0x64, 0x0a, 0x0c, 0x4d, 0x69,
 	0x67, 0x72, 0x61, 0x74, 0x65, 0x54, 0x79, 0x70, 0x65, 0x73, 0x12, 0x13, 0x0a, 0x0f, 0x55, 0x4e,
 	0x4b, 0x4e, 0x4f, 0x57, 0x4e, 0x5f, 0x4d, 0x49, 0x47, 0x52, 0x41, 0x54, 0x45, 0x10, 0x00, 0x12,
 	0x14, 0x0a, 0x10, 0x4e, 0x4f, 0x4e, 0x5f, 0x52, 0x45, 0x50, 0x4c, 0x5f, 0x54, 0x4f, 0x5f, 0x52,
 	0x45, 0x50, 0x4c, 0x10, 0x01, 0x12, 0x14, 0x0a, 0x10, 0x52, 0x45, 0x50, 0x4c, 0x5f, 0x54, 0x4f,
 	0x5f, 0x4e, 0x4f, 0x4e, 0x5f, 0x52, 0x45, 0x50, 0x4c, 0x10, 0x02, 0x12, 0x13, 0x0a, 0x0f, 0x56,
 	0x45, 0x52, 0x53, 0x49, 0x4f, 0x4e, 0x5f, 0x55, 0x50, 0x47, 0x52, 0x41, 0x44, 0x45, 0x10, 0x03,
-	0x32, 0xd5, 0x02, 0x0a, 0x09, 0x4d, 0x69, 0x67, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x5a,
+	0x32, 0xb4, 0x03, 0x0a, 0x09, 0x4d, 0x69, 0x67, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x5a,
 	0x0a, 0x0f, 0x50, 0x72, 0x6f, 0x62, 0x65, 0x43, 0x6f, 0x6e, 0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x65,
 	0x72, 0x12, 0x21, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x76, 0x31, 0x2e, 0x50, 0x72,
 	0x6f, 0x62, 0x65, 0x43, 0x6f, 0x6e, 0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x65, 0x72, 0x52, 0x65, 0x71,
@@ -613,8 +722,14 @@ var file_migration_proto_rawDesc = []byte{
 	0x73, 0x74, 0x1a, 0x32, 0x2e, 0x6d, 0x69, 0x67, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x76,
 	0x31, 0x61, 0x6c, 0x70, 0x68, 0x61, 0x31, 0x2e, 0x47, 0x65, 0x74, 0x4d, 0x69, 0x67, 0x72, 0x61,
 	0x74, 0x69, 0x6f, 0x6e, 0x43, 0x61, 0x70, 0x61, 0x62, 0x69, 0x6c, 0x69, 0x74, 0x79, 0x52, 0x65,
-	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x42, 0x0e, 0x5a, 0x0c, 0x2e, 0x2f, 0x3b, 0x6d,
-	0x69, 0x67, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x5d, 0x0a, 0x0a, 0x4e, 0x6f, 0x64, 0x65,
+	0x52, 0x65, 0x73, 0x63, 0x61, 0x6e, 0x12, 0x25, 0x2e, 0x6d, 0x69, 0x67, 0x72, 0x61, 0x74, 0x69,
+	0x6f, 0x6e, 0x2e, 0x76, 0x31, 0x61, 0x6c, 0x70, 0x68, 0x61, 0x31, 0x2e, 0x4e, 0x6f, 0x64, 0x65,
+	0x52, 0x65, 0x73, 0x63, 0x61, 0x6e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x26, 0x2e,
+	0x6d, 0x69, 0x67, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x76, 0x31, 0x61, 0x6c, 0x70, 0x68,
+	0x61, 0x31, 0x2e, 0x4e, 0x6f, 0x64, 0x65, 0x52, 0x65, 0x73, 0x63, 0x61, 0x6e, 0x52, 0x65, 0x73,
+	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x42, 0x0e, 0x5a, 0x0c, 0x2e, 0x2f, 0x3b, 0x6d, 0x69,
+	0x67, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -630,7 +745,7 @@ func file_migration_proto_rawDescGZIP() []byte {
 }
 
 var file_migration_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_migration_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
+var file_migration_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
 var file_migration_proto_goTypes = []interface{}{
 	(MigrateTypes)(0),                      // 0: migration.v1alpha1.MigrateTypes
 	(*GetMigrationCapabilityRequest)(nil),  // 1: migration.v1alpha1.GetMigrationCapabilityRequest
@@ -639,30 +754,34 @@ var file_migration_proto_goTypes = []interface{}{
 	(*Volume)(nil),                         // 4: migration.v1alpha1.Volume
 	(*VolumeMigrateRequest)(nil),           // 5: migration.v1alpha1.VolumeMigrateRequest
 	(*VolumeMigrateResponse)(nil),          // 6: migration.v1alpha1.VolumeMigrateResponse
-	(*MigrationCapability_RPC)(nil),        // 7: migration.v1alpha1.MigrationCapability.RPC
-	nil,                                    // 8: migration.v1alpha1.Volume.VolumeContextEntry
-	nil,                                    // 9: migration.v1alpha1.VolumeMigrateRequest.ScParametersEntry
-	nil,                                    // 10: migration.v1alpha1.VolumeMigrateRequest.ScSourceParametersEntry
-	(*common.ProbeControllerRequest)(nil),  // 11: common.v1.ProbeControllerRequest
-	(*common.ProbeControllerResponse)(nil), // 12: common.v1.ProbeControllerResponse
+	(*NodeRescanRequest)(nil),              // 7: migration.v1alpha1.NodeRescanRequest
+	(*NodeRescanResponse)(nil),             // 8: migration.v1alpha1.NodeRescanResponse
+	(*MigrationCapability_RPC)(nil),        // 9: migration.v1alpha1.MigrationCapability.RPC
+	nil,                                    // 10: migration.v1alpha1.Volume.VolumeContextEntry
+	nil,                                    // 11: migration.v1alpha1.VolumeMigrateRequest.ScParametersEntry
+	nil,                                    // 12: migration.v1alpha1.VolumeMigrateRequest.ScSourceParametersEntry
+	(*common.ProbeControllerRequest)(nil),  // 13: common.v1.ProbeControllerRequest
+	(*common.ProbeControllerResponse)(nil), // 14: common.v1.ProbeControllerResponse
 }
 var file_migration_proto_depIdxs = []int32{
-	7,  // 0: migration.v1alpha1.MigrationCapability.rpc:type_name -> migration.v1alpha1.MigrationCapability.RPC
+	9,  // 0: migration.v1alpha1.MigrationCapability.rpc:type_name -> migration.v1alpha1.MigrationCapability.RPC
 	2,  // 1: migration.v1alpha1.GetMigrationCapabilityResponse.capabilities:type_name -> migration.v1alpha1.MigrationCapability
-	8,  // 2: migration.v1alpha1.Volume.volume_context:type_name -> migration.v1alpha1.Volume.VolumeContextEntry
+	10, // 2: migration.v1alpha1.Volume.volume_context:type_name -> migration.v1alpha1.Volume.VolumeContextEntry
 	0,  // 3: migration.v1alpha1.VolumeMigrateRequest.type:type_name -> migration.v1alpha1.MigrateTypes
-	9,  // 4: migration.v1alpha1.VolumeMigrateRequest.sc_parameters:type_name -> migration.v1alpha1.VolumeMigrateRequest.ScParametersEntry
-	10, // 5: migration.v1alpha1.VolumeMigrateRequest.scSource_parameters:type_name -> migration.v1alpha1.VolumeMigrateRequest.ScSourceParametersEntry
+	11, // 4: migration.v1alpha1.VolumeMigrateRequest.sc_parameters:type_name -> migration.v1alpha1.VolumeMigrateRequest.ScParametersEntry
+	12, // 5: migration.v1alpha1.VolumeMigrateRequest.scSource_parameters:type_name -> migration.v1alpha1.VolumeMigrateRequest.ScSourceParametersEntry
 	4,  // 6: migration.v1alpha1.VolumeMigrateResponse.migrated_volume:type_name -> migration.v1alpha1.Volume
 	0,  // 7: migration.v1alpha1.MigrationCapability.RPC.type:type_name -> migration.v1alpha1.MigrateTypes
-	11, // 8: migration.v1alpha1.Migration.ProbeController:input_type -> common.v1.ProbeControllerRequest
+	13, // 8: migration.v1alpha1.Migration.ProbeController:input_type -> common.v1.ProbeControllerRequest
 	5,  // 9: migration.v1alpha1.Migration.VolumeMigrate:input_type -> migration.v1alpha1.VolumeMigrateRequest
 	1,  // 10: migration.v1alpha1.Migration.GetMigrationCapabilities:input_type -> migration.v1alpha1.GetMigrationCapabilityRequest
-	12, // 11: migration.v1alpha1.Migration.ProbeController:output_type -> common.v1.ProbeControllerResponse
-	6,  // 12: migration.v1alpha1.Migration.VolumeMigrate:output_type -> migration.v1alpha1.VolumeMigrateResponse
-	3,  // 13: migration.v1alpha1.Migration.GetMigrationCapabilities:output_type -> migration.v1alpha1.GetMigrationCapabilityResponse
-	11, // [11:14] is the sub-list for method output_type
-	8,  // [8:11] is the sub-list for method input_type
+	7,  // 11: migration.v1alpha1.Migration.NodeRescan:input_type -> migration.v1alpha1.NodeRescanRequest
+	14, // 12: migration.v1alpha1.Migration.ProbeController:output_type -> common.v1.ProbeControllerResponse
+	6,  // 13: migration.v1alpha1.Migration.VolumeMigrate:output_type -> migration.v1alpha1.VolumeMigrateResponse
+	3,  // 14: migration.v1alpha1.Migration.GetMigrationCapabilities:output_type -> migration.v1alpha1.GetMigrationCapabilityResponse
+	8,  // 15: migration.v1alpha1.Migration.NodeRescan:output_type -> migration.v1alpha1.NodeRescanResponse
+	12, // [12:16] is the sub-list for method output_type
+	8,  // [8:12] is the sub-list for method input_type
 	8,  // [8:8] is the sub-list for extension type_name
 	8,  // [8:8] is the sub-list for extension extendee
 	0,  // [0:8] is the sub-list for field type_name
@@ -747,6 +866,30 @@ func file_migration_proto_init() {
 			}
 		}
 		file_migration_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*NodeRescanRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_migration_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*NodeRescanResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_migration_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*MigrationCapability_RPC); i {
 			case 0:
 				return &v.state
@@ -771,7 +914,7 @@ func file_migration_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_migration_proto_rawDesc,
 			NumEnums:      1,
-			NumMessages:   10,
+			NumMessages:   12,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

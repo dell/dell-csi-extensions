@@ -17,7 +17,7 @@ service Migration{
       returns (GetMigrationCapabilityResponse) {}
   // NodeRescan does a rescan on nodes to find new path after migration
   rpc NodeRescan(NodeRescanRequest)
-      returns (NodeRescanResponse)
+      returns (NodeRescanResponse) {}
 }
 
 // Input request used in GetMigrationCapabilities API

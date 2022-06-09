@@ -15,6 +15,9 @@ service Migration{
   // GetMigrationCapabilities is used to query CSI drivers for their supported migration capabilities
   rpc GetMigrationCapabilities(GetMigrationCapabilityRequest)
       returns (GetMigrationCapabilityResponse) {}
+  // NodeRescan does a rescan on nodes to find new path after migration
+  rpc NodeRescan(NodeRescanRequest)
+      returns (NodeRescanResponse)
 }
 
 // Input request used in GetMigrationCapabilities API
@@ -66,4 +69,13 @@ enum MigrateTypes {
   NON_REPL_TO_REPL = 1;
   REPL_TO_NON_REPL = 2;
   VERSION_UPGRADE = 3;
+}
+
+message NodeRescanRequest {
+}
+
+message NodeRescanResponse {
+    string node_id = 1;
+    string new_paths = 2;
+    bool found_path = 3;
 }

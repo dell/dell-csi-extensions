@@ -12,6 +12,9 @@ service Migration{
   // VolumeMigrate is used to migrate volume on storage array to different location/protection group
   rpc VolumeMigrate(VolumeMigrateRequest)
       returns (VolumeMigrateResponse) {}
+  //ArrayMigrate is to migrate all volumes from one storage array to a newer storay array
+  rpc ArrayMigrate(ArrayMigrateRequest)
+      returns (ArrayMigrateResponse) {}
   // GetMigrationCapabilities is used to query CSI drivers for their supported migration capabilities
   rpc GetMigrationCapabilities(GetMigrationCapabilityRequest)
       returns (GetMigrationCapabilityResponse) {}
@@ -66,4 +69,43 @@ enum MigrateTypes {
   NON_REPL_TO_REPL = 1;
   REPL_TO_NON_REPL = 2;
   VERSION_UPGRADE = 3;
+}
+
+message ArrayMigrateRequest {
+  oneof action_types {
+    Action action = 3;
+  }
+  map<string, string> parameters = 2;
+}
+
+message ArrayMigrateResponse{
+  bool success = 1;
+  oneof action_types {
+    Action action = 2;
+  }
+}
+
+// SupportedActions is the set of action types
+// which are supported by a specific CSI driver
+message SupportedActions {
+  oneof Actions {
+    ActionTypes type = 1;
+  }
+}
+
+// ActionTypes are the exhaustive set of actions which can be performed on
+// the migration group
+enum ActionTypes {
+  // Site-Aware actions
+  UNKNOWN_ACTION = 0;
+  //Migrate
+  MG_MIGRATE = 1;
+  //Rescan
+  MG_RESCAN = 2;
+  //Commit
+  MG_COMMIT = 3;
+}
+
+message Action{
+  ActionTypes action_types = 1;
 }

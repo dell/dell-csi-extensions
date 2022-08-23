@@ -23,6 +23,8 @@ type MigrationClient interface {
 	ProbeController(ctx context.Context, in *common.ProbeControllerRequest, opts ...grpc.CallOption) (*common.ProbeControllerResponse, error)
 	// VolumeMigrate is used to migrate volume on storage array to different location/protection group
 	VolumeMigrate(ctx context.Context, in *VolumeMigrateRequest, opts ...grpc.CallOption) (*VolumeMigrateResponse, error)
+	//ArrayMigrate is to migrate all volumes from one storage array to a newer storay array
+	ArrayMigrate(ctx context.Context, in *ArrayMigrateRequest, opts ...grpc.CallOption) (*ArrayMigrateResponse, error)
 	// GetMigrationCapabilities is used to query CSI drivers for their supported migration capabilities
 	GetMigrationCapabilities(ctx context.Context, in *GetMigrationCapabilityRequest, opts ...grpc.CallOption) (*GetMigrationCapabilityResponse, error)
 }
@@ -53,6 +55,15 @@ func (c *migrationClient) VolumeMigrate(ctx context.Context, in *VolumeMigrateRe
 	return out, nil
 }
 
+func (c *migrationClient) ArrayMigrate(ctx context.Context, in *ArrayMigrateRequest, opts ...grpc.CallOption) (*ArrayMigrateResponse, error) {
+	out := new(ArrayMigrateResponse)
+	err := c.cc.Invoke(ctx, "/migration.v1alpha1.Migration/ArrayMigrate", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *migrationClient) GetMigrationCapabilities(ctx context.Context, in *GetMigrationCapabilityRequest, opts ...grpc.CallOption) (*GetMigrationCapabilityResponse, error) {
 	out := new(GetMigrationCapabilityResponse)
 	err := c.cc.Invoke(ctx, "/migration.v1alpha1.Migration/GetMigrationCapabilities", in, out, opts...)
@@ -70,6 +81,8 @@ type MigrationServer interface {
 	ProbeController(context.Context, *common.ProbeControllerRequest) (*common.ProbeControllerResponse, error)
 	// VolumeMigrate is used to migrate volume on storage array to different location/protection group
 	VolumeMigrate(context.Context, *VolumeMigrateRequest) (*VolumeMigrateResponse, error)
+	//ArrayMigrate is to migrate all volumes from one storage array to a newer storay array
+	ArrayMigrate(context.Context, *ArrayMigrateRequest) (*ArrayMigrateResponse, error)
 	// GetMigrationCapabilities is used to query CSI drivers for their supported migration capabilities
 	GetMigrationCapabilities(context.Context, *GetMigrationCapabilityRequest) (*GetMigrationCapabilityResponse, error)
 }
@@ -83,6 +96,9 @@ func (UnimplementedMigrationServer) ProbeController(context.Context, *common.Pro
 }
 func (UnimplementedMigrationServer) VolumeMigrate(context.Context, *VolumeMigrateRequest) (*VolumeMigrateResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method VolumeMigrate not implemented")
+}
+func (UnimplementedMigrationServer) ArrayMigrate(context.Context, *ArrayMigrateRequest) (*ArrayMigrateResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ArrayMigrate not implemented")
 }
 func (UnimplementedMigrationServer) GetMigrationCapabilities(context.Context, *GetMigrationCapabilityRequest) (*GetMigrationCapabilityResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetMigrationCapabilities not implemented")
@@ -135,6 +151,24 @@ func _Migration_VolumeMigrate_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Migration_ArrayMigrate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ArrayMigrateRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MigrationServer).ArrayMigrate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/migration.v1alpha1.Migration/ArrayMigrate",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MigrationServer).ArrayMigrate(ctx, req.(*ArrayMigrateRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Migration_GetMigrationCapabilities_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetMigrationCapabilityRequest)
 	if err := dec(in); err != nil {
@@ -167,6 +201,10 @@ var Migration_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "VolumeMigrate",
 			Handler:    _Migration_VolumeMigrate_Handler,
+		},
+		{
+			MethodName: "ArrayMigrate",
+			Handler:    _Migration_ArrayMigrate_Handler,
 		},
 		{
 			MethodName: "GetMigrationCapabilities",

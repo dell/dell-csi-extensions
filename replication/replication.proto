@@ -182,9 +182,12 @@ enum ActionTypes {
   ESTABLISH = 17;
   // Same as ESTABLISH
   SYNC = 18;
+
   TEST_FAILOVER = 19;
   TEST_FAILOVER_STOP = 20;
 
+  CREATE_SNAPSHOT = 21;
+  ABORT_SNAPSHOT = 22;
 }
 
 message Action{
@@ -209,6 +212,8 @@ message ExecuteActionResponse{
   }
   // status of the protection group
   StorageProtectionGroupStatus status = 3;
+
+  map<string, string> action_attributes = 4;
 }
 message GetStorageProtectionGroupStatusRequest {
   // Protection group to be monitored

@@ -1,0 +1,20 @@
+# CODEOWNERS
+#
+# documentation for this file can be found at:
+# https://help.github.com/en/articles/about-code-owners
+
+# These are the default owners for the code and will
+# be requested for review when someone opens a pull request.
+# order is alphabetical for easier maintenance.
+#
+# Alik Saring (alikdell)
+# Bharath Sreekanth (bharathsreekanth)
+# Gallacher Sean (gallacher)
+# Jacob Grosner (JacobGros)
+# Matt Schmaelzle (mjsdell)
+# Yamunadevi Shanmugam (shanmydell)
+# Trevor Dawe (tdawe)
+# Prasanna Muthukumaraswamy (prablr79)
+
+# for all files:
+@alikdell @bharathsreekanth @gallacher @JacobGros @mjsdell @shanmydell @tdawe @prablr79

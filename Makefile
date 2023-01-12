@@ -102,7 +102,7 @@ common: $(PROTOC) $(PROTOC_GEN_GO)
 	(cd "$@"; go mod tidy; go build "$@".pb.go)
 
 clean:
-	rm -rf ./replication/replication.pb.go ./replication/replication_grpc.pb.go ./podmon/podmon.pb.go ./podmon/podmon_grpc.pb.go ./volumeGroupSnapshot/volumeGroupSnapshot.pb.go ./volumeGroupSnapshot/volumeGroupSnapshot_grpc.pb.go
+	rm -rf ./replication/replication.pb.go ./replication/replication_grpc.pb.go ./podmon/podmon.pb.go ./podmon/podmon_grpc.pb.go ./volumeGroupSnapshot/volumeGroupSnapshot.pb.go ./volumeGroupSnapshot/volumeGroupSnapshot_grpc.pb.go ./migration/migration.pb.go ./migration/migration_grpc.pb.go ./common/common.pb.go
 
 clobber: clean
 	rm -rf "$(PROTOC)" "$(PROTOC_GEN_GO)" "$(PROTOC_TMP_DIR)"

@@ -45,7 +45,7 @@ func NewReplicationClient(cc grpc.ClientConnInterface) ReplicationClient {
 
 func (c *replicationClient) ProbeController(ctx context.Context, in *common.ProbeControllerRequest, opts ...grpc.CallOption) (*common.ProbeControllerResponse, error) {
 	out := new(common.ProbeControllerResponse)
-	err := c.cc.Invoke(ctx, "/replication.v1alpha1.Replication/ProbeController", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/replication.v1.Replication/ProbeController", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -54,7 +54,7 @@ func (c *replicationClient) ProbeController(ctx context.Context, in *common.Prob
 
 func (c *replicationClient) GetReplicationCapabilities(ctx context.Context, in *GetReplicationCapabilityRequest, opts ...grpc.CallOption) (*GetReplicationCapabilityResponse, error) {
 	out := new(GetReplicationCapabilityResponse)
-	err := c.cc.Invoke(ctx, "/replication.v1alpha1.Replication/GetReplicationCapabilities", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/replication.v1.Replication/GetReplicationCapabilities", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -63,7 +63,7 @@ func (c *replicationClient) GetReplicationCapabilities(ctx context.Context, in *
 
 func (c *replicationClient) CreateStorageProtectionGroup(ctx context.Context, in *CreateStorageProtectionGroupRequest, opts ...grpc.CallOption) (*CreateStorageProtectionGroupResponse, error) {
 	out := new(CreateStorageProtectionGroupResponse)
-	err := c.cc.Invoke(ctx, "/replication.v1alpha1.Replication/CreateStorageProtectionGroup", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/replication.v1.Replication/CreateStorageProtectionGroup", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -72,7 +72,7 @@ func (c *replicationClient) CreateStorageProtectionGroup(ctx context.Context, in
 
 func (c *replicationClient) CreateRemoteVolume(ctx context.Context, in *CreateRemoteVolumeRequest, opts ...grpc.CallOption) (*CreateRemoteVolumeResponse, error) {
 	out := new(CreateRemoteVolumeResponse)
-	err := c.cc.Invoke(ctx, "/replication.v1alpha1.Replication/CreateRemoteVolume", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/replication.v1.Replication/CreateRemoteVolume", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -81,7 +81,7 @@ func (c *replicationClient) CreateRemoteVolume(ctx context.Context, in *CreateRe
 
 func (c *replicationClient) DeleteStorageProtectionGroup(ctx context.Context, in *DeleteStorageProtectionGroupRequest, opts ...grpc.CallOption) (*DeleteStorageProtectionGroupResponse, error) {
 	out := new(DeleteStorageProtectionGroupResponse)
-	err := c.cc.Invoke(ctx, "/replication.v1alpha1.Replication/DeleteStorageProtectionGroup", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/replication.v1.Replication/DeleteStorageProtectionGroup", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -90,7 +90,7 @@ func (c *replicationClient) DeleteStorageProtectionGroup(ctx context.Context, in
 
 func (c *replicationClient) ExecuteAction(ctx context.Context, in *ExecuteActionRequest, opts ...grpc.CallOption) (*ExecuteActionResponse, error) {
 	out := new(ExecuteActionResponse)
-	err := c.cc.Invoke(ctx, "/replication.v1alpha1.Replication/ExecuteAction", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/replication.v1.Replication/ExecuteAction", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -99,7 +99,7 @@ func (c *replicationClient) ExecuteAction(ctx context.Context, in *ExecuteAction
 
 func (c *replicationClient) GetStorageProtectionGroupStatus(ctx context.Context, in *GetStorageProtectionGroupStatusRequest, opts ...grpc.CallOption) (*GetStorageProtectionGroupStatusResponse, error) {
 	out := new(GetStorageProtectionGroupStatusResponse)
-	err := c.cc.Invoke(ctx, "/replication.v1alpha1.Replication/GetStorageProtectionGroupStatus", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/replication.v1.Replication/GetStorageProtectionGroupStatus", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -173,7 +173,7 @@ func _Replication_ProbeController_Handler(srv interface{}, ctx context.Context, 
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/replication.v1alpha1.Replication/ProbeController",
+		FullMethod: "/replication.v1.Replication/ProbeController",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ReplicationServer).ProbeController(ctx, req.(*common.ProbeControllerRequest))
@@ -191,7 +191,7 @@ func _Replication_GetReplicationCapabilities_Handler(srv interface{}, ctx contex
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/replication.v1alpha1.Replication/GetReplicationCapabilities",
+		FullMethod: "/replication.v1.Replication/GetReplicationCapabilities",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ReplicationServer).GetReplicationCapabilities(ctx, req.(*GetReplicationCapabilityRequest))
@@ -209,7 +209,7 @@ func _Replication_CreateStorageProtectionGroup_Handler(srv interface{}, ctx cont
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/replication.v1alpha1.Replication/CreateStorageProtectionGroup",
+		FullMethod: "/replication.v1.Replication/CreateStorageProtectionGroup",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ReplicationServer).CreateStorageProtectionGroup(ctx, req.(*CreateStorageProtectionGroupRequest))
@@ -227,7 +227,7 @@ func _Replication_CreateRemoteVolume_Handler(srv interface{}, ctx context.Contex
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/replication.v1alpha1.Replication/CreateRemoteVolume",
+		FullMethod: "/replication.v1.Replication/CreateRemoteVolume",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ReplicationServer).CreateRemoteVolume(ctx, req.(*CreateRemoteVolumeRequest))
@@ -245,7 +245,7 @@ func _Replication_DeleteStorageProtectionGroup_Handler(srv interface{}, ctx cont
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/replication.v1alpha1.Replication/DeleteStorageProtectionGroup",
+		FullMethod: "/replication.v1.Replication/DeleteStorageProtectionGroup",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ReplicationServer).DeleteStorageProtectionGroup(ctx, req.(*DeleteStorageProtectionGroupRequest))
@@ -263,7 +263,7 @@ func _Replication_ExecuteAction_Handler(srv interface{}, ctx context.Context, de
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/replication.v1alpha1.Replication/ExecuteAction",
+		FullMethod: "/replication.v1.Replication/ExecuteAction",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ReplicationServer).ExecuteAction(ctx, req.(*ExecuteActionRequest))
@@ -281,7 +281,7 @@ func _Replication_GetStorageProtectionGroupStatus_Handler(srv interface{}, ctx c
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/replication.v1alpha1.Replication/GetStorageProtectionGroupStatus",
+		FullMethod: "/replication.v1.Replication/GetStorageProtectionGroupStatus",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ReplicationServer).GetStorageProtectionGroupStatus(ctx, req.(*GetStorageProtectionGroupStatusRequest))
@@ -293,7 +293,7 @@ func _Replication_GetStorageProtectionGroupStatus_Handler(srv interface{}, ctx c
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var Replication_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "replication.v1alpha1.Replication",
+	ServiceName: "replication.v1.Replication",
 	HandlerType: (*ReplicationServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

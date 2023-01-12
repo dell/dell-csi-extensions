@@ -39,7 +39,7 @@ func NewMigrationClient(cc grpc.ClientConnInterface) MigrationClient {
 
 func (c *migrationClient) ProbeController(ctx context.Context, in *common.ProbeControllerRequest, opts ...grpc.CallOption) (*common.ProbeControllerResponse, error) {
 	out := new(common.ProbeControllerResponse)
-	err := c.cc.Invoke(ctx, "/migration.v1alpha1.Migration/ProbeController", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/migration.v1.Migration/ProbeController", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -48,7 +48,7 @@ func (c *migrationClient) ProbeController(ctx context.Context, in *common.ProbeC
 
 func (c *migrationClient) VolumeMigrate(ctx context.Context, in *VolumeMigrateRequest, opts ...grpc.CallOption) (*VolumeMigrateResponse, error) {
 	out := new(VolumeMigrateResponse)
-	err := c.cc.Invoke(ctx, "/migration.v1alpha1.Migration/VolumeMigrate", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/migration.v1.Migration/VolumeMigrate", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -57,7 +57,7 @@ func (c *migrationClient) VolumeMigrate(ctx context.Context, in *VolumeMigrateRe
 
 func (c *migrationClient) ArrayMigrate(ctx context.Context, in *ArrayMigrateRequest, opts ...grpc.CallOption) (*ArrayMigrateResponse, error) {
 	out := new(ArrayMigrateResponse)
-	err := c.cc.Invoke(ctx, "/migration.v1alpha1.Migration/ArrayMigrate", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/migration.v1.Migration/ArrayMigrate", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -66,7 +66,7 @@ func (c *migrationClient) ArrayMigrate(ctx context.Context, in *ArrayMigrateRequ
 
 func (c *migrationClient) GetMigrationCapabilities(ctx context.Context, in *GetMigrationCapabilityRequest, opts ...grpc.CallOption) (*GetMigrationCapabilityResponse, error) {
 	out := new(GetMigrationCapabilityResponse)
-	err := c.cc.Invoke(ctx, "/migration.v1alpha1.Migration/GetMigrationCapabilities", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/migration.v1.Migration/GetMigrationCapabilities", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -125,7 +125,7 @@ func _Migration_ProbeController_Handler(srv interface{}, ctx context.Context, de
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/migration.v1alpha1.Migration/ProbeController",
+		FullMethod: "/migration.v1.Migration/ProbeController",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(MigrationServer).ProbeController(ctx, req.(*common.ProbeControllerRequest))
@@ -143,7 +143,7 @@ func _Migration_VolumeMigrate_Handler(srv interface{}, ctx context.Context, dec 
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/migration.v1alpha1.Migration/VolumeMigrate",
+		FullMethod: "/migration.v1.Migration/VolumeMigrate",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(MigrationServer).VolumeMigrate(ctx, req.(*VolumeMigrateRequest))
@@ -161,7 +161,7 @@ func _Migration_ArrayMigrate_Handler(srv interface{}, ctx context.Context, dec f
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/migration.v1alpha1.Migration/ArrayMigrate",
+		FullMethod: "/migration.v1.Migration/ArrayMigrate",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(MigrationServer).ArrayMigrate(ctx, req.(*ArrayMigrateRequest))
@@ -179,7 +179,7 @@ func _Migration_GetMigrationCapabilities_Handler(srv interface{}, ctx context.Co
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/migration.v1alpha1.Migration/GetMigrationCapabilities",
+		FullMethod: "/migration.v1.Migration/GetMigrationCapabilities",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(MigrationServer).GetMigrationCapabilities(ctx, req.(*GetMigrationCapabilityRequest))
@@ -191,7 +191,7 @@ func _Migration_GetMigrationCapabilities_Handler(srv interface{}, ctx context.Co
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var Migration_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "migration.v1alpha1.Migration",
+	ServiceName: "migration.v1.Migration",
 	HandlerType: (*MigrationServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

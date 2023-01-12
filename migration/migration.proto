@@ -1,5 +1,5 @@
 syntax = "proto3";
-package migration.v1alpha1;
+package migration.v1;
 
 import "common.proto";
 

@@ -1,5 +1,5 @@
 syntax = "proto3";
-package replication.v1alpha1;
+package replication.v1;
 
 import "common.proto";
 

@@ -104,7 +104,7 @@ type CreateVolumeGroupSnapshotResponse struct {
 	Snapshots []*Snapshot `protobuf:"bytes,1,rep,name=Snapshots,proto3" json:"Snapshots,omitempty"`
 	// snapshot group csi id on array
 	SnapshotGroupID string `protobuf:"bytes,2,opt,name=SnapshotGroupID,proto3" json:"SnapshotGroupID,omitempty"`
-	//time VGS was created
+	// time VGS was created
 	CreationTime int64 `protobuf:"varint,3,opt,name=CreationTime,proto3" json:"CreationTime,omitempty"`
 }
 
@@ -176,7 +176,7 @@ type Snapshot struct {
 	ReadyToUse bool `protobuf:"varint,4,opt,name=readyToUse,proto3" json:"readyToUse,omitempty"`
 	// time snapshot was created
 	CreationTime int64 `protobuf:"varint,5,opt,name=CreationTime,proto3" json:"CreationTime,omitempty"`
-	//name of snapshot found in array
+	// name of snapshot found in array
 	Name string `protobuf:"bytes,6,opt,name=Name,proto3" json:"Name,omitempty"`
 }
 

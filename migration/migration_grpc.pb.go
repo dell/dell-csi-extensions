@@ -23,7 +23,7 @@ type MigrationClient interface {
 	ProbeController(ctx context.Context, in *common.ProbeControllerRequest, opts ...grpc.CallOption) (*common.ProbeControllerResponse, error)
 	// VolumeMigrate is used to migrate volume on storage array to different location/protection group
 	VolumeMigrate(ctx context.Context, in *VolumeMigrateRequest, opts ...grpc.CallOption) (*VolumeMigrateResponse, error)
-	//ArrayMigrate is to migrate all volumes from one storage array to a newer storay array
+	// ArrayMigrate is to migrate all volumes from one storage array to a newer storay array
 	ArrayMigrate(ctx context.Context, in *ArrayMigrateRequest, opts ...grpc.CallOption) (*ArrayMigrateResponse, error)
 	// GetMigrationCapabilities is used to query CSI drivers for their supported migration capabilities
 	GetMigrationCapabilities(ctx context.Context, in *GetMigrationCapabilityRequest, opts ...grpc.CallOption) (*GetMigrationCapabilityResponse, error)
@@ -81,7 +81,7 @@ type MigrationServer interface {
 	ProbeController(context.Context, *common.ProbeControllerRequest) (*common.ProbeControllerResponse, error)
 	// VolumeMigrate is used to migrate volume on storage array to different location/protection group
 	VolumeMigrate(context.Context, *VolumeMigrateRequest) (*VolumeMigrateResponse, error)
-	//ArrayMigrate is to migrate all volumes from one storage array to a newer storay array
+	// ArrayMigrate is to migrate all volumes from one storage array to a newer storay array
 	ArrayMigrate(context.Context, *ArrayMigrateRequest) (*ArrayMigrateResponse, error)
 	// GetMigrationCapabilities is used to query CSI drivers for their supported migration capabilities
 	GetMigrationCapabilities(context.Context, *GetMigrationCapabilityRequest) (*GetMigrationCapabilityResponse, error)

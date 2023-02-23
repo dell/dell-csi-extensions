@@ -376,6 +376,7 @@ type ReplicationCapability struct {
 	unknownFields protoimpl.UnknownFields
 
 	// Types that are assignable to Type:
+	//
 	//	*ReplicationCapability_Rpc
 	Type isReplicationCapability_Type `protobuf_oneof:"type"`
 }
@@ -444,6 +445,7 @@ type SupportedActions struct {
 	unknownFields protoimpl.UnknownFields
 
 	// Types that are assignable to Actions:
+	//
 	//	*SupportedActions_Type
 	Actions isSupportedActions_Actions `protobuf_oneof:"Actions"`
 }
@@ -976,6 +978,7 @@ type ExecuteActionRequest struct {
 	ActionId          string `protobuf:"bytes,1,opt,name=action_id,json=actionId,proto3" json:"action_id,omitempty"`
 	ProtectionGroupId string `protobuf:"bytes,2,opt,name=protection_group_id,json=protectionGroupId,proto3" json:"protection_group_id,omitempty"`
 	// Types that are assignable to ActionTypes:
+	//
 	//	*ExecuteActionRequest_Action
 	ActionTypes                     isExecuteActionRequest_ActionTypes `protobuf_oneof:"action_types"`
 	ProtectionGroupAttributes       map[string]string                  `protobuf:"bytes,4,rep,name=protection_group_attributes,json=protectionGroupAttributes,proto3" json:"protection_group_attributes,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
@@ -1081,6 +1084,7 @@ type ExecuteActionResponse struct {
 
 	Success bool `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
 	// Types that are assignable to ActionTypes:
+	//
 	//	*ExecuteActionResponse_Action
 	ActionTypes isExecuteActionResponse_ActionTypes `protobuf_oneof:"action_types"`
 	// status of the protection group

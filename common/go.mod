@@ -1,5 +1,5 @@
 module github.com/dell/dell-csi-extensions/common
 
-go 1.18
+go 1.20
 
 require google.golang.org/protobuf v1.27.1

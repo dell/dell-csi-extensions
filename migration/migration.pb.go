@@ -80,11 +80,11 @@ type ActionTypes int32
 const (
 	// Site-Aware actions
 	ActionTypes_UNKNOWN_ACTION ActionTypes = 0
-	//Migrate
+	// Migrate
 	ActionTypes_MG_MIGRATE ActionTypes = 1
-	//Rescan
+	// Rescan
 	ActionTypes_MG_RESCAN ActionTypes = 2
-	//Commit
+	// Commit
 	ActionTypes_MG_COMMIT ActionTypes = 3
 )
 
@@ -176,6 +176,7 @@ type MigrationCapability struct {
 	unknownFields protoimpl.UnknownFields
 
 	// Types that are assignable to Type:
+	//
 	//	*MigrationCapability_Rpc
 	Type isMigrationCapability_Type `protobuf_oneof:"type"`
 }
@@ -370,6 +371,7 @@ type VolumeMigrateRequest struct {
 	VolumeHandle string `protobuf:"bytes,1,opt,name=volume_handle,json=volumeHandle,proto3" json:"volume_handle,omitempty"`
 	StorageClass string `protobuf:"bytes,2,opt,name=storage_class,json=storageClass,proto3" json:"storage_class,omitempty"`
 	// Types that are assignable to MigrateTypes:
+	//
 	//	*VolumeMigrateRequest_Type
 	MigrateTypes       isVolumeMigrateRequest_MigrateTypes `protobuf_oneof:"migrate_types"`
 	ScParameters       map[string]string                   `protobuf:"bytes,4,rep,name=sc_parameters,json=scParameters,proto3" json:"sc_parameters,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
@@ -521,6 +523,7 @@ type ArrayMigrateRequest struct {
 	unknownFields protoimpl.UnknownFields
 
 	// Types that are assignable to ActionTypes:
+	//
 	//	*ArrayMigrateRequest_Action
 	ActionTypes isArrayMigrateRequest_ActionTypes `protobuf_oneof:"action_types"`
 	Parameters  map[string]string                 `protobuf:"bytes,2,rep,name=parameters,proto3" json:"parameters,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
@@ -596,6 +599,7 @@ type ArrayMigrateResponse struct {
 
 	Success bool `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
 	// Types that are assignable to ActionTypes:
+	//
 	//	*ArrayMigrateResponse_Action
 	ActionTypes isArrayMigrateResponse_ActionTypes `protobuf_oneof:"action_types"`
 }
@@ -671,6 +675,7 @@ type SupportedActions struct {
 	unknownFields protoimpl.UnknownFields
 
 	// Types that are assignable to Actions:
+	//
 	//	*SupportedActions_Type
 	Actions isSupportedActions_Actions `protobuf_oneof:"Actions"`
 }

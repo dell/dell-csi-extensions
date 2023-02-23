@@ -1,6 +1,6 @@
 module github.com/dell/dell-csi-extensions/podmon
 
-go 1.18
+go 1.20
 
 require (
 	google.golang.org/grpc v1.38.0

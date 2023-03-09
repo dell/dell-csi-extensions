@@ -21,6 +21,9 @@ service Replication {
   // DeleteStorageProtectionGroup is used to delete a Storage Protection group
   rpc DeleteStorageProtectionGroup(DeleteStorageProtectionGroupRequest)
       returns (DeleteStorageProtectionGroupResponse) {}
+  // DeleteRemoteVolume is used to delete a volume on a remote array
+  rpc DeleteRemoteVolume(DeleteRemoteVolumeRequest)
+      returns (DeleteRemoteVolumeResponse) {}
   // ExecuteAction is used to update the action to failover, testfailover, failback, suspend, etc.
   rpc ExecuteAction(ExecuteActionRequest)
       returns (ExecuteActionResponse) {}
@@ -132,6 +135,16 @@ message DeleteStorageProtectionGroupResponse {
   // Intentionally left empty
 }
 
+// TODO: implement
+message DeleteRemoteVolumeRequest {
+  // In active development
+}
+
+// TODO: implement
+message DeleteRemoteVolumeResponse {
+  // In active development
+}
+
 // ActionTypes are the exhaustive set of actions which can be performed on
 // the protection group
 enum ActionTypes {
@@ -240,4 +253,3 @@ message GetStorageProtectionGroupStatusResponse {
   // Returns status of the protection group
   StorageProtectionGroupStatus status = 1;
 }
-

@@ -29,8 +29,8 @@ type ReplicationClient interface {
 	CreateRemoteVolume(ctx context.Context, in *CreateRemoteVolumeRequest, opts ...grpc.CallOption) (*CreateRemoteVolumeResponse, error)
 	// DeleteStorageProtectionGroup is used to delete a Storage Protection group
 	DeleteStorageProtectionGroup(ctx context.Context, in *DeleteStorageProtectionGroupRequest, opts ...grpc.CallOption) (*DeleteStorageProtectionGroupResponse, error)
-	// DeleteRemoteVolume is used to delete a volume on a remote array
-	DeleteRemoteVolume(ctx context.Context, in *DeleteRemoteVolumeRequest, opts ...grpc.CallOption) (*DeleteRemoteVolumeResponse, error)
+	// DeleteLocalVolume is used to delete a volume on the local array
+	DeleteLocalVolume(ctx context.Context, in *DeleteLocalVolumeRequest, opts ...grpc.CallOption) (*DeleteLocalVolumeResponse, error)
 	// ExecuteAction is used to update the action to failover, testfailover, failback, suspend, etc.
 	ExecuteAction(ctx context.Context, in *ExecuteActionRequest, opts ...grpc.CallOption) (*ExecuteActionResponse, error)
 	// GetStorageProtectionGroupStatus is used to monitor the status of Storage Protection groups
@@ -90,9 +90,9 @@ func (c *replicationClient) DeleteStorageProtectionGroup(ctx context.Context, in
 	return out, nil
 }
 
-func (c *replicationClient) DeleteRemoteVolume(ctx context.Context, in *DeleteRemoteVolumeRequest, opts ...grpc.CallOption) (*DeleteRemoteVolumeResponse, error) {
-	out := new(DeleteRemoteVolumeResponse)
-	err := c.cc.Invoke(ctx, "/replication.v1.Replication/DeleteRemoteVolume", in, out, opts...)
+func (c *replicationClient) DeleteLocalVolume(ctx context.Context, in *DeleteLocalVolumeRequest, opts ...grpc.CallOption) (*DeleteLocalVolumeResponse, error) {
+	out := new(DeleteLocalVolumeResponse)
+	err := c.cc.Invoke(ctx, "/replication.v1.Replication/DeleteLocalVolume", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -131,8 +131,8 @@ type ReplicationServer interface {
 	CreateRemoteVolume(context.Context, *CreateRemoteVolumeRequest) (*CreateRemoteVolumeResponse, error)
 	// DeleteStorageProtectionGroup is used to delete a Storage Protection group
 	DeleteStorageProtectionGroup(context.Context, *DeleteStorageProtectionGroupRequest) (*DeleteStorageProtectionGroupResponse, error)
-	// DeleteRemoteVolume is used to delete a volume on a remote array
-	DeleteRemoteVolume(context.Context, *DeleteRemoteVolumeRequest) (*DeleteRemoteVolumeResponse, error)
+	// DeleteLocalVolume is used to delete a volume on the local array
+	DeleteLocalVolume(context.Context, *DeleteLocalVolumeRequest) (*DeleteLocalVolumeResponse, error)
 	// ExecuteAction is used to update the action to failover, testfailover, failback, suspend, etc.
 	ExecuteAction(context.Context, *ExecuteActionRequest) (*ExecuteActionResponse, error)
 	// GetStorageProtectionGroupStatus is used to monitor the status of Storage Protection groups
@@ -158,8 +158,8 @@ func (UnimplementedReplicationServer) CreateRemoteVolume(context.Context, *Creat
 func (UnimplementedReplicationServer) DeleteStorageProtectionGroup(context.Context, *DeleteStorageProtectionGroupRequest) (*DeleteStorageProtectionGroupResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteStorageProtectionGroup not implemented")
 }
-func (UnimplementedReplicationServer) DeleteRemoteVolume(context.Context, *DeleteRemoteVolumeRequest) (*DeleteRemoteVolumeResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeleteRemoteVolume not implemented")
+func (UnimplementedReplicationServer) DeleteLocalVolume(context.Context, *DeleteLocalVolumeRequest) (*DeleteLocalVolumeResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteLocalVolume not implemented")
 }
 func (UnimplementedReplicationServer) ExecuteAction(context.Context, *ExecuteActionRequest) (*ExecuteActionResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ExecuteAction not implemented")
@@ -269,20 +269,20 @@ func _Replication_DeleteStorageProtectionGroup_Handler(srv interface{}, ctx cont
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Replication_DeleteRemoteVolume_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DeleteRemoteVolumeRequest)
+func _Replication_DeleteLocalVolume_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteLocalVolumeRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ReplicationServer).DeleteRemoteVolume(ctx, in)
+		return srv.(ReplicationServer).DeleteLocalVolume(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/replication.v1.Replication/DeleteRemoteVolume",
+		FullMethod: "/replication.v1.Replication/DeleteLocalVolume",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ReplicationServer).DeleteRemoteVolume(ctx, req.(*DeleteRemoteVolumeRequest))
+		return srv.(ReplicationServer).DeleteLocalVolume(ctx, req.(*DeleteLocalVolumeRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -351,8 +351,8 @@ var Replication_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Replication_DeleteStorageProtectionGroup_Handler,
 		},
 		{
-			MethodName: "DeleteRemoteVolume",
-			Handler:    _Replication_DeleteRemoteVolume_Handler,
+			MethodName: "DeleteLocalVolume",
+			Handler:    _Replication_DeleteLocalVolume_Handler,
 		},
 		{
 			MethodName: "ExecuteAction",

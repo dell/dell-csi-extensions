@@ -21,9 +21,9 @@ service Replication {
   // DeleteStorageProtectionGroup is used to delete a Storage Protection group
   rpc DeleteStorageProtectionGroup(DeleteStorageProtectionGroupRequest)
       returns (DeleteStorageProtectionGroupResponse) {}
-  // DeleteRemoteVolume is used to delete a volume on a remote array
-  rpc DeleteRemoteVolume(DeleteRemoteVolumeRequest)
-      returns (DeleteRemoteVolumeResponse) {}
+  // DeleteLocalVolume is used to delete a volume on the local array
+  rpc DeleteLocalVolume(DeleteLocalVolumeRequest)
+      returns (DeleteLocalVolumeResponse) {}
   // ExecuteAction is used to update the action to failover, testfailover, failback, suspend, etc.
   rpc ExecuteAction(ExecuteActionRequest)
       returns (ExecuteActionResponse) {}
@@ -87,7 +87,16 @@ message DeleteRemoteVolumeRequest {
   string volume_handle = 1;
   // Optional information about the local volume
   // will be supplied if the driver returned this information
-  // in the CSI DeleteVolumeResponse
+  // in the CSI DeleteRemoteVolumeResponse
+  map<string, string> parameters = 2;
+}
+
+message DeleteLocalVolumeRequest {
+  // Handle of the local volume, whose deletion is being requested
+  string volume_handle = 1;
+  // Optional information about the local volume
+  // will be supplied if the driver returned this information
+  // in the CSI DeleteLocalVolumeResponse
   map<string, string> parameters = 2;
 }
 
@@ -125,6 +134,11 @@ message CreateRemoteVolumeResponse {
 message DeleteRemoteVolumeResponse {
   // Remote Volume
   Volume remote_volume = 1;
+}
+
+message DeleteLocalVolumeResponse {
+  // Local Volume
+  Volume local_volume = 1;
 }
 
 // Information about a specific volume

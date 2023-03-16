@@ -82,15 +82,6 @@ message CreateRemoteVolumeRequest {
   map<string, string> parameters = 2;
 }
 
-message DeleteRemoteVolumeRequest {
-  // Handle of the local volume, whose remote replica's deletion is being requested
-  string volume_handle = 1;
-  // Optional information about the local volume
-  // will be supplied if the driver returned this information
-  // in the CSI DeleteRemoteVolumeResponse
-  map<string, string> parameters = 2;
-}
-
 message DeleteLocalVolumeRequest {
   // Handle of the local volume, whose deletion is being requested
   string volume_handle = 1;
@@ -126,12 +117,6 @@ message CreateStorageProtectionGroupResponse {
 
 // Information about the remote replica of a local volume
 message CreateRemoteVolumeResponse {
-  // Remote Volume
-  Volume remote_volume = 1;
-}
-
-// Information about the deleted remote replica of a local volume
-message DeleteRemoteVolumeResponse {
   // Remote Volume
   Volume remote_volume = 1;
 }

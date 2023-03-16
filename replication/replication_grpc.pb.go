@@ -29,7 +29,7 @@ type ReplicationClient interface {
 	CreateRemoteVolume(ctx context.Context, in *CreateRemoteVolumeRequest, opts ...grpc.CallOption) (*CreateRemoteVolumeResponse, error)
 	// DeleteStorageProtectionGroup is used to delete a Storage Protection group
 	DeleteStorageProtectionGroup(ctx context.Context, in *DeleteStorageProtectionGroupRequest, opts ...grpc.CallOption) (*DeleteStorageProtectionGroupResponse, error)
-	// DeleteLocalVolume is used to delete a volume on the local array
+	// DeleteLocalVolume is used to delete a replicated volume on the local array upon request from the remote replication controller
 	DeleteLocalVolume(ctx context.Context, in *DeleteLocalVolumeRequest, opts ...grpc.CallOption) (*DeleteLocalVolumeResponse, error)
 	// ExecuteAction is used to update the action to failover, testfailover, failback, suspend, etc.
 	ExecuteAction(ctx context.Context, in *ExecuteActionRequest, opts ...grpc.CallOption) (*ExecuteActionResponse, error)
@@ -131,7 +131,7 @@ type ReplicationServer interface {
 	CreateRemoteVolume(context.Context, *CreateRemoteVolumeRequest) (*CreateRemoteVolumeResponse, error)
 	// DeleteStorageProtectionGroup is used to delete a Storage Protection group
 	DeleteStorageProtectionGroup(context.Context, *DeleteStorageProtectionGroupRequest) (*DeleteStorageProtectionGroupResponse, error)
-	// DeleteLocalVolume is used to delete a volume on the local array
+	// DeleteLocalVolume is used to delete a replicated volume on the local array upon request from the remote replication controller
 	DeleteLocalVolume(context.Context, *DeleteLocalVolumeRequest) (*DeleteLocalVolumeResponse, error)
 	// ExecuteAction is used to update the action to failover, testfailover, failback, suspend, etc.
 	ExecuteAction(context.Context, *ExecuteActionRequest) (*ExecuteActionResponse, error)

@@ -3,15 +3,15 @@ module github.com/dell/dell-csi-extensions/replication
 go 1.20
 
 require (
-	github.com/dell/dell-csi-extensions/common v1.1.1-0.20230223202046-27623e36b613
-	google.golang.org/grpc v1.42.0
-	google.golang.org/protobuf v1.27.1
+	github.com/dell/dell-csi-extensions/common v1.1.1
+	google.golang.org/grpc v1.54.0
+	google.golang.org/protobuf v1.30.0
 )
 
 require (
-	github.com/golang/protobuf v1.5.0 // indirect
-	golang.org/x/net v0.0.0-20200822124328-c89045814202 // indirect
-	golang.org/x/sys v0.0.0-20200323222414-85ca7c5b95cd // indirect
-	golang.org/x/text v0.3.0 // indirect
-	google.golang.org/genproto v0.0.0-20200526211855-cb27e3aa2013 // indirect
+	github.com/golang/protobuf v1.5.3 // indirect
+	golang.org/x/net v0.8.0 // indirect
+	golang.org/x/sys v0.6.0 // indirect
+	golang.org/x/text v0.8.0 // indirect
+	google.golang.org/genproto v0.0.0-20230320184635-7606e756e683 // indirect
 )

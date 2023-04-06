@@ -57,6 +57,7 @@ message ReplicationCapability {
       DELETE_PROTECTION_GROUP = 2;
       MONITOR_PROTECTION_GROUP = 3;
       REPLICATION_ACTION_EXECUTION = 4;
+      DELETE_LOCAL_VOLUME = 5;
     }
     Type type = 1;
   }

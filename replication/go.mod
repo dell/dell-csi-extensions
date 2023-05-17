@@ -3,7 +3,7 @@ module github.com/dell/dell-csi-extensions/replication
 go 1.20
 
 require (
-	github.com/dell/dell-csi-extensions/common v1.1.1
+	github.com/dell/dell-csi-extensions/common v1.1.2-0.20230330153121-7ee6c5ed22ea
 	google.golang.org/grpc v1.55.0
 	google.golang.org/protobuf v1.30.0
 )

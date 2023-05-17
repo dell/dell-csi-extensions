@@ -1,5 +1,5 @@
-github.com/dell/dell-csi-extensions/common v1.1.1 h1:PXdqCm6lL1g02KuR9SrsrZeoTk6jZoyPp56s3ve+8DE=
-github.com/dell/dell-csi-extensions/common v1.1.1/go.mod h1:eHfx1rwttqdPZBy8cfvRbJYPElGa/NY4fRR/P//yndw=
+github.com/dell/dell-csi-extensions/common v1.1.2-0.20230330153121-7ee6c5ed22ea h1:lF3naiaf9W8NN2eS5y9z8rb7tcvqD3wkXdXTEcXltIg=
+github.com/dell/dell-csi-extensions/common v1.1.2-0.20230330153121-7ee6c5ed22ea/go.mod h1:gN1UI4Wag3JXtqHQwkM4O6p0V+2WvesangManDOH9a8=
 github.com/golang/protobuf v1.5.0/go.mod h1:FsONVRAS9T7sI+LIUmWTfcYkHO4aIWwzhcaSAoJOfIk=
 github.com/golang/protobuf v1.5.3 h1:KhyjKVUg7Usr/dYsdSqoFveMYd5ko72D+zANwlG1mmg=
 github.com/golang/protobuf v1.5.3/go.mod h1:XVQd3VNwM+JqD3oG2Ue2ip4fOMUkwXdXDdiuN0vRsmY=

@@ -1,6 +1,6 @@
 module github.com/dell/dell-csi-extensions/replication
 
-go 1.20
+go 1.21
 
 require (
 	github.com/dell/dell-csi-extensions/common v1.1.2-0.20230330153121-7ee6c5ed22ea

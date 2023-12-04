@@ -8,6 +8,7 @@ require (
 )
 
 require (
+	github.com/dell/dell-csi-extensions/common v1.2.1-0.20231031131730-68f55c8c3ba2 // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
 	golang.org/x/net v0.17.0 // indirect
 	golang.org/x/sys v0.13.0 // indirect

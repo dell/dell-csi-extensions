@@ -3,7 +3,7 @@ module github.com/dell/dell-csi-extensions/migration
 go 1.21
 
 require (
-	github.com/dell/dell-csi-extensions/common v1.1.3-0.20230821172541-714a03dae9b6
+	github.com/dell/dell-csi-extensions/common v1.2.1-0.20231031131730-68f55c8c3ba2
 	google.golang.org/grpc v1.57.1
 	google.golang.org/protobuf v1.31.0
 )

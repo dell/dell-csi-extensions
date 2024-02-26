@@ -3,9 +3,9 @@ module github.com/dell/dell-csi-extensions/replication
 go 1.22
 
 require (
-	github.com/dell/dell-csi-extensions/common v1.2.1-0.20231031131730-68f55c8c3ba2
+	github.com/dell/dell-csi-extensions/common v1.3.1-0.20240225182105-97381002f223
 	google.golang.org/grpc v1.57.1
-	google.golang.org/protobuf v1.31.0
+	google.golang.org/protobuf v1.32.0
 )
 
 require (

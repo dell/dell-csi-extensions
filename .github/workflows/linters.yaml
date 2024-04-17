@@ -20,9 +20,6 @@ jobs:
           cache: false
       - name: Checkout the code
         uses: actions/checkout@v4.1.0
-      - name: Vendor packages
-        run: |
-          go mod vendor
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v4
         with:

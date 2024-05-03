@@ -20,21 +20,26 @@ export GOPATH
 
 # Only set PROTOC_VER if it has an empty value.
 ifeq (,$(strip $(PROTOC_VER)))
-PROTOC_VER := 3.20.0
+PROTOC_VER := 26.1
 endif
 
 PROTOC_OS := $(shell uname -s)
 ifeq (Darwin,$(PROTOC_OS))
 PROTOC_OS := osx
 endif
+ifeq (Linux,$(PROTOC_OS))
+PROTOC_OS := linux
+endif
 
 PROTOC_ARCH := $(shell uname -m)
 ifeq (i386,$(PROTOC_ARCH))
 PROTOC_ARCH := x86_32
 endif
-
 ifeq (arm64osx,$(PROTOC_ARCH)$(PROTOC_OS))
 PROTOC_ARCH := aarch_64
+endif
+ifeq (x86_64,$(PROTOC_ARCH))
+PROTOC_ARCH := x86_64
 endif
 
 PROTOC := ./protoc
@@ -64,8 +69,8 @@ $(PROTOC):
 # for protoc
 PROTOC_GEN_GO := protoc-gen-go
 $(PROTOC_GEN_GO):
-	go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.26
-	go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.1
+	go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.34.0
+	go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.3.0
 
 ########################################################################
 ##                              PATH                                  ##
@@ -106,5 +111,3 @@ clean:
 
 clobber: clean
 	rm -rf "$(PROTOC)" "$(PROTOC_GEN_GO)" "$(PROTOC_TMP_DIR)"
-
-

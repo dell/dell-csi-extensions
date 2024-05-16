@@ -4,26 +4,27 @@
 [![License](https://img.shields.io/github/license/dell/dell-csi-extensions)](LICENSE)
 [![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/dell/dell-csi-extensions?include_prereleases&label=latest&style=flat-square)](https://github.com/dell/dell-csi-extensions/releases/latest)
 
-This repository holds definitions of additional `grpc` protocols which can be implemented by CSI drivers to build upon existing 
+This repository holds definitions of additional `grpc` protocols which can be implemented by CSI drivers to build upon existing
 functionality supported via the Container Storage Interface ([CSI](https://github.com/container-storage-interface/spec)).
 These are defined as .proto files, and compiled using the protoc program to generate a go file.
 
 Current set of supported protocols:
+
 * podmon -  Extensions to CSI to enable CSI drivers to report host connectivity status
 * replication - Extensions to CSI to enable CSI drivers to leverage storage array based
  replication within Kubernetes clusters
 * volumeGroupSnapshot - Extensions to CSI to enable CSI drivers to manage crash-consistent snapshots of groups of volumes
 
-You can utilize the provided `Makefile` to compile protocol definitions in .proto files to go source files and then build 
+You can utilize the provided `Makefile` to compile protocol definitions in .proto files to go source files and then build
 the source files.
 
 * `podmon` to compile and update files for podmon
 * `replication` to compile and update files for replication.
 * `volumeGroupSnapshot` to compile and update files for volumeGroupSnapshot
 
-Each protocol is available as a `go module` and can be included separately in CSI drivers. 
+Each protocol is available as a `go module` and can be included separately in CSI drivers.
 
-If you are using `gocsi` for developing CSI driver, these extensions APIs can be used in CSI drivers by registering additional grpc servers while creating the `Storage Plugin` object. 
+If you are using `gocsi` for developing CSI driver, these extensions APIs can be used in CSI drivers by registering additional grpc servers while creating the `Storage Plugin` object.
 This facility is available in the forked version of gocsi [here](https://github.com/dell/gocsi).
 
 For using `podmon`, include "github.com/dell/dell-csi-extensions/podmon" in your go module dependencies.  

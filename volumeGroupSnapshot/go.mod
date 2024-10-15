@@ -1,6 +1,6 @@
 module github.com/dell/dell-csi-extensions/volumeGroupSnapshot
 
-go 1.22
+go 1.23.2
 
 require (
 	github.com/dell/dell-csi-extensions/common v1.5.0

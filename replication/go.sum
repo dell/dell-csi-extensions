@@ -1,5 +1,5 @@
-github.com/dell/dell-csi-extensions/common v1.5.0 h1:YOziVlY4gMYP8c6mlMrEmJRciHXEuKApNMSbNEREfe4=
-github.com/dell/dell-csi-extensions/common v1.5.0/go.mod h1:i399nWUo/jpNtBFDgEuPN0jPxckEda0hB+P+z4A/R+g=
+github.com/dell/dell-csi-extensions/common v1.6.0 h1:TX8BAsreg9zb8T5jXd3DV+SH6Rn5NgBEbnYcMJS3Ccc=
+github.com/dell/dell-csi-extensions/common v1.6.0/go.mod h1:1F9D9nja/HNFj9Fy2gu5NbP4l9J2FJgynmz22bYGdzI=
 github.com/google/go-cmp v0.6.0 h1:ofyhxvXcZhMsU5ulbFiLKl/XBFqE1GSq7atu8tAmTRI=
 github.com/google/go-cmp v0.6.0/go.mod h1:17dUlkBOakJ0+DkrSSNjCkIjxS6bF9zb3elmeNGIjoY=
 golang.org/x/net v0.25.0 h1:d/OCCoBEUq33pjydKrGQhw7IlUPI2Oylr+8qLx49kac=

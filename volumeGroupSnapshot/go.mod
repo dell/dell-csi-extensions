@@ -3,7 +3,7 @@ module github.com/dell/dell-csi-extensions/volumeGroupSnapshot
 go 1.23
 
 require (
-	github.com/dell/dell-csi-extensions/common v1.5.0
+	github.com/dell/dell-csi-extensions/common v1.6.0
 	google.golang.org/grpc v1.65.0
 	google.golang.org/protobuf v1.34.2
 )

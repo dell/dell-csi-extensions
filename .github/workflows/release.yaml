@@ -3,13 +3,85 @@ name: Release dell csi extensions
 # Can be manually triggered
 on:
   workflow_call: 
-  workflow_dispatch:
-    inputs:
-      version:
-        description: 'Version to release (major, minor, patch)'
-        required: true
-        default: 'none'
+  # workflow_dispatch:
+  #   inputs:
+  #     version:
+  #       description: 'Version to release (major, minor, patch)'
+  #       required: true
+  #       default: 'none'
 jobs:
-  csm-release:
-    uses: dell/common-github-actions/.github/workflows/csm-release-libs.yaml@main
-    name: Release Go Client Libraries
+  create-tag:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Git
+        run: |
+          git config --global user.name 'github-actions'
+          git config --global user.email 'github-actions@github.com'
+
+      - name: Get latest tag
+        id: get_latest_tag
+        run: echo ::set-output name=tag::$(git describe --tags `git rev-list --tags --max-count=1`)
+
+      - name: Create new tag
+        id: create_tag
+        run: |
+          latest_tag=${{ steps.get_latest_tag.outputs.tag }}
+          new_tag=$(echo $latest_tag | awk -F. -v OFS=. '{$NF += 1 ; print}')
+          git tag -a common/$new_tag -s -m "common $new_tag"
+          git push origin common/$new_tag
+
+  # create-pr:
+  #   runs-on: ubuntu-latest
+  #   needs: create-tag
+  #   steps:
+  #     - name: Checkout repository
+  #       uses: actions/checkout@v2
+
+  #     - name: Update modules
+  #       run: |
+  #         modules=("migration" "replication" "volumeGroupSnapshot")
+  #         for module in "${modules[@]}"; do
+  #           cd $module
+  #           go get github.com/dell/dell-csi-extensions/common@${{ steps.create_tag.outputs.new_tag }}
+  #           cd ..
+  #         done
+
+  #     - name: Create Pull Request
+  #       uses: peter-evans/create-pull-request@v4
+  #       with:
+  #         commit-message: 'Update common module to ${{ steps.create_tag.outputs.new_tag }}'
+  #         branch: update-common-module
+  #         title: 'Update common module to ${{ steps.create_tag.outputs.new_tag }}'
+  #         body: 'This PR updates the common module to ${{ steps.create_tag.outputs.new_tag }}.'
+
+  # create-module-tags:
+  #   runs-on: ubuntu-latest
+  #   needs: create-pr
+  #   steps:
+  #     - name: Checkout repository
+  #       uses: actions/checkout@v2
+
+  #     - name: Set up Git
+  #       run: |
+  #         git config --global user.name 'github-actions'
+  #         git config --global user.email 'github-actions@github.com'
+
+  #     - name: Get latest tag
+  #       id: get_latest_tag
+  #       run: echo ::set-output name=tag::$(git describe --tags `git rev-list --tags --max-count=1`)
+
+  #     - name: Create new tags for modules
+  #       run: |
+  #         modules=("migration" "replication" "volumeGroupSnapshot")
+  #         for module in "${modules[@]}"; do
+  #           latest_tag=${{ steps.get_latest_tag.outputs.tag }}
+  #           new_tag=$(echo $latest_tag | awk -F. -v OFS=. '{$NF += 1 ; print}')
+  #           git tag -a $module/$new_tag -s -m "$module $new_tag"
+  #           git push origin $module/$new_tag
+  #         done
+  # csm-release:
+  #   uses: dell/common-github-actions/.github/workflows/csm-release-libs.yaml@main
+  #   name: Release Go Client Libraries

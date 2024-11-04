@@ -3,12 +3,12 @@ name: Release dell csi extensions
 # Can be manually triggered
 on:
   workflow_call: 
-  # workflow_dispatch:
-  #   inputs:
-  #     version:
-  #       description: 'Version to release (major, minor, patch)'
-  #       required: true
-  #       default: 'none'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to release (major, minor, patch)'
+        required: true
+        default: 'none'
 jobs:
   create-tag:
     runs-on: ubuntu-latest

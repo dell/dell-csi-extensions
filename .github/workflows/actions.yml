@@ -1,9 +1,10 @@
-name: Workflow
-on:
+name: Common Workflows
+on:  # yamllint disable-line rule:truthy
   push:
     branches: [main]
   pull_request:
-    branches: [main]
+    branches: ["**"]
+
 jobs:
   code-check:
     name: Check Go formatting, linting, vetting
@@ -11,8 +12,8 @@ jobs:
     steps:
       - name: Checkout the code
         uses: actions/checkout@v4
-      - name: Run the formatter, linter, and vetter
-        uses: dell/common-github-actions/go-code-formatter-linter-vetter@main
+      - name: Run the formatter and vetter
+        uses: dell/common-github-actions/go-code-formatter-vetter@main
         with:
           directories: --vet-in-dir podmon ./...
   sanitize:

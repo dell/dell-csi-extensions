@@ -1,0 +1,171 @@
+name: Release Dell-Csi-Extensions
+# Invocable as a reusable workflow
+# Can be manually triggered
+on:
+  workflow_call: 
+  workflow_dispatch:
+jobs:
+  release-modules:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0  # Fetch all history for all tags
+
+      - name: Set up Git
+        run: |
+          git config --global user.name 'github-actions'
+          git config --global user.email 'github-actions@github.com'
+
+      - name: Fetch all tags
+        run: git fetch --tags
+
+      - name: Get latest release tags for all modules
+        id: get_latest_release_tags
+        run: |
+          modules=("volumeGroupSnapshot" "replication" "migration" "common" "podmon")
+          for module in "${modules[@]}"; do
+            latest_release_tag=$(git tag -l "$module/*" | sort -V | tail -n 1)
+            echo "Latest release tag for $module: $latest_release_tag"
+            echo "${module}_release_tag=$latest_release_tag" >> $GITHUB_ENV
+            version=${latest_release_tag#*/}
+            echo "${module}_version=$version" >> $GITHUB_ENV
+          done
+
+      - name: Create new tag for common module
+        id: create_common_tag
+        run: |
+          module="common"
+          latest_release_tag=$(eval echo \${${module}_release_tag})
+          IFS='/' read -r _ version <<< "$latest_release_tag"
+          IFS='.' read -r major minor patch <<< "$version"
+          new_minor=$((minor + 1))
+          new_tag="$module/$major.$new_minor.0"
+          new_version="$major.$new_minor.0"
+          
+          echo "Creating new tag for $module: $new_tag"
+          echo "${module}_new_tag=$new_tag" >> $GITHUB_ENV
+          echo "${module}_new_version=$new_version" >> $GITHUB_ENV
+          
+          git tag -a $new_tag -m "$module $new_tag"
+          git push origin $new_tag
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update dependencies
+        id: update_dependencies
+        run: |
+          echo "Starting dependency update process..."
+          modules=("volumeGroupSnapshot" "replication" "migration")
+          common_version=$(eval echo \${common_new_version})
+          echo "Current branch after creating/updating branch: $(git branch --show-current)"
+          changes_made=false
+          for module in "${modules[@]}"; do
+            echo "Updating dependencies for $module"
+            cd $module
+            go get github.com/dell/dell-csi-extensions/common@v1.6.0
+            go mod tidy
+            cd ..
+            if [[ -n $(git status --porcelain) ]]; then
+              git add $module/go.mod $module/go.sum
+              changes_made=true
+              echo "Changes detected and staged for $module"
+            else
+              echo "No changes detected for $module"
+            fi
+          done
+          if [ "$changes_made" = true ]; then
+            git status
+            git commit -m "Update common dependency to $common_version"
+            git push origin $branch_name --force
+            echo "changes_made=true" >> $GITHUB_ENV
+            echo "Changes committed and pushed to $branch_name"
+          else
+            echo "No changes to commit"
+            echo "changes_made=false" >> $GITHUB_ENV
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create pull request
+        if: env.changes_made == 'true'
+        uses: peter-evans/create-pull-request@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: update-common-dependency
+          # base: test-release2
+          title: "Update common dependency to ${{ env.common_new_version }}"
+          body: "This PR updates the common dependency to ${{ env.common_new_version }}."
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Check branch status
+        if: env.changes_made == 'true'
+        run: |
+          echo "Checking branch status..."
+          git status
+          git branch -a
+          git log -1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+
+      - name: Wait for PR to be merged
+        if: env.changes_made == 'true'
+        run: |
+          echo "Waiting for the PR to be merged. Please merge the PR manually."
+          while true; do
+            pr_status=$(gh pr view update-common-dependency --json state --jq '.state')
+            if [ "$pr_status" = "MERGED" ]; then
+              echo "PR has been merged."
+              break
+            fi
+            echo "PR not merged yet. Sleeping for 1 minute..."
+            sleep 60
+          done
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create new tags for other modules
+        if: env.changes_made == 'false' || steps.wait_for_pr_to_be_merged.outputs.pr_merged == 'true'
+        run: |
+          echo "Creating new tags for other modules..."
+          modules=("volumeGroupSnapshot" "replication" "migration" "podmon")
+          for module in "${modules[@]}"; do
+            latest_release_tag=$(eval echo \${${module}_release_tag})
+            IFS='/' read -r _ version <<< "$latest_release_tag"
+            IFS='.' read -r major minor patch <<< "$version"
+            new_minor=$((minor + 1))
+            new_tag="$module/$major.$new_minor.0"
+            new_version="$major.$new_minor.0"
+            
+            echo "Creating new tag for $module: $new_tag"
+            echo "${module}_new_tag=$new_tag" >> $GITHUB_ENV
+            echo "${module}_new_version=$new_version" >> $GITHUB_ENV
+            
+            git tag -a $new_tag -m "$module $new_tag"
+            git push origin $new_tag
+          done
+
+      - name: Create GitHub release
+        uses: actions/create-release@v1
+        with:
+          tag_name: ${{ env.volumeGroupSnapshot_new_tag }}  # Use the volumeGroupSnapshot tag
+          release_name: |
+            volumeGroupSnapshot ${{ env.volumeGroupSnapshot_new_version }},
+            Replication ${{ env.replication_new_version }}, 
+            Migration ${{ env.migration_new_version }},
+            Common ${{ env.common_new_version }}, 
+            Podmon ${{ env.podmon_new_version }}
+          body: |
+            ## Release Notes
+            - **VolumeGroupSnapshot**: ${{ env.volumeGroupSnapshot_new_version }}
+            - **Replication**: ${{ env.replication_new_version }}
+            - **Migration**: ${{ env.migration_new_version }}
+            - **Common**: ${{ env.common_new_version }}
+            - **Podmon**: ${{ env.podmon_new_version }}
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

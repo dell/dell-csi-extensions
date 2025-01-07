@@ -1,9 +1,19 @@
-name: Release Dell-Csi-Extensions
+# Summary of the steps:
+# 1.Create new tag for common module
+# 2.Update the dependency of common in "volumeGroupSnapshot", "replication", "migration" folder
+# 3.Raise PR for this change.
+# 4.Merge the PR.(Manually)
+# 5.Create the new tags for "volumeGroupSnapshot", "replication", "migration", "podmon"
+# 6.Create the GitHub release
+# 7.All the steps are automated except the step 4.
+
+name: Release dell csi extensions optimized
 # Invocable as a reusable workflow
 # Can be manually triggered
 on:
   workflow_call: 
-  workflow_dispatch:
+  workflow_dispatch:  
+
 jobs:
   release-modules:
     runs-on: ubuntu-latest
@@ -56,60 +66,43 @@ jobs:
       - name: Update dependencies
         id: update_dependencies
         run: |
-          echo "Starting dependency update process..."
           modules=("volumeGroupSnapshot" "replication" "migration")
           common_version=$(eval echo \${common_new_version})
-          echo "Current branch after creating/updating branch: $(git branch --show-current)"
           changes_made=false
           for module in "${modules[@]}"; do
-            echo "Updating dependencies for $module"
             cd $module
-            go get github.com/dell/dell-csi-extensions/common@v1.6.0
+            go get github.com/dell/dell-csi-extensions/common@$common_version
             go mod tidy
             cd ..
             if [[ -n $(git status --porcelain) ]]; then
               git add $module/go.mod $module/go.sum
               changes_made=true
-              echo "Changes detected and staged for $module"
-            else
-              echo "No changes detected for $module"
             fi
           done
           if [ "$changes_made" = true ]; then
-            git status
             git commit -m "Update common dependency to $common_version"
-            git push origin $branch_name --force
             echo "changes_made=true" >> $GITHUB_ENV
-            echo "Changes committed and pushed to $branch_name"
           else
-            echo "No changes to commit"
             echo "changes_made=false" >> $GITHUB_ENV
           fi
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/create-github-app-token@v1.11.0
+        id: generate-token
+        with:
+          app-id: ${{ vars.CSM_RELEASE_APP_ID }}
+          private-key: ${{ secrets.CSM_RELEASE_APP_PRIVATE_KEY }}
 
       - name: Create pull request
         if: env.changes_made == 'true'
-        uses: peter-evans/create-pull-request@v4
+        uses: peter-evans/create-pull-request@v7
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ steps.generate-token.outputs.token }}
           branch: update-common-dependency
-          # base: test-release2
+          commit-message: "Update common dependency to ${{ env.common_new_version }}"
           title: "Update common dependency to ${{ env.common_new_version }}"
           body: "This PR updates the common dependency to ${{ env.common_new_version }}."
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Check branch status
-        if: env.changes_made == 'true'
-        run: |
-          echo "Checking branch status..."
-          git status
-          git branch -a
-          git log -1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
+          sign-commits: true
+          delete-branch: true
 
       - name: Wait for PR to be merged
         if: env.changes_made == 'true'
@@ -128,9 +121,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create new tags for other modules
-        if: env.changes_made == 'false' || steps.wait_for_pr_to_be_merged.outputs.pr_merged == 'true'
+        if: env.changes_made == 'true'
         run: |
-          echo "Creating new tags for other modules..."
           modules=("volumeGroupSnapshot" "replication" "migration" "podmon")
           for module in "${modules[@]}"; do
             latest_release_tag=$(eval echo \${${module}_release_tag})
@@ -148,24 +140,20 @@ jobs:
             git push origin $new_tag
           done
 
-      - name: Create GitHub release
-        uses: actions/create-release@v1
+      - name: Create GitHub Release
+        id: release_notes
+        uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ env.volumeGroupSnapshot_new_tag }}  # Use the volumeGroupSnapshot tag
-          release_name: |
-            volumeGroupSnapshot ${{ env.volumeGroupSnapshot_new_version }},
+          tag_name: ${{ github.event.inputs.volumeGroupSnapshot_new_tag }}  # Use the volumeGroupSnapshot tag
+          name: |
+            Release volumeGroupSnapshot ${{ env.volumeGroupSnapshot_new_version }},
             Replication ${{ env.replication_new_version }}, 
             Migration ${{ env.migration_new_version }},
             Common ${{ env.common_new_version }}, 
             Podmon ${{ env.podmon_new_version }}
-          body: |
-            ## Release Notes
-            - **VolumeGroupSnapshot**: ${{ env.volumeGroupSnapshot_new_version }}
-            - **Replication**: ${{ env.replication_new_version }}
-            - **Migration**: ${{ env.migration_new_version }}
-            - **Common**: ${{ env.common_new_version }}
-            - **Podmon**: ${{ env.podmon_new_version }}
-          draft: false
+          generate_release_notes: true
+          draft: true
           prerelease: false
+          make_latest: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

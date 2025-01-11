@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0  # Fetch all history for all tags
 
@@ -86,7 +86,7 @@ jobs:
             echo "changes_made=false" >> $GITHUB_ENV
           fi
 
-      - uses: actions/create-github-app-token@v1.11.0
+      - uses: actions/create-github-app-token@v1.11.1
         id: generate-token
         with:
           app-id: ${{ vars.CSM_RELEASE_APP_ID }}

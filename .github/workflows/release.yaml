@@ -7,7 +7,7 @@
 # 6.Create the GitHub release
 # 7.All the steps are automated except the step 4.
 
-name: Release dell csi extensions optimized
+name: Release Dell-CSI-Extensions
 # Invocable as a reusable workflow
 # Can be manually triggered
 on:
@@ -23,10 +23,14 @@ jobs:
         with:
           fetch-depth: 0  # Fetch all history for all tags
 
-      - name: Set up Git
-        run: |
-          git config --global user.name 'github-actions'
-          git config --global user.email 'github-actions@github.com'
+      - name: Import GPG key
+        uses: crazy-max/ghaction-import-gpg@v6
+        with:
+            gpg_private_key: ${{ secrets.CSM_GPG_PRIVATE_KEY }}
+            git_user_signingkey: true
+            git_commit_gpgsign: true
+            git_tag_gpgsign: true
+            git_config_global: true
 
       - name: Fetch all tags
         run: git fetch --tags
@@ -58,7 +62,7 @@ jobs:
           echo "${module}_new_tag=$new_tag" >> $GITHUB_ENV
           echo "${module}_new_version=$new_version" >> $GITHUB_ENV
           
-          git tag -a $new_tag -m "$module $new_tag"
+          git tag -s -a $new_tag -m "$module $new_tag"
           git push origin $new_tag
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -136,7 +140,7 @@ jobs:
             echo "${module}_new_tag=$new_tag" >> $GITHUB_ENV
             echo "${module}_new_version=$new_version" >> $GITHUB_ENV
             
-            git tag -a $new_tag -m "$module $new_tag"
+            git tag -s -a $new_tag -m "$module $new_tag"
             git push origin $new_tag
           done
 

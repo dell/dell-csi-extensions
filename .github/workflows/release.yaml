@@ -123,6 +123,10 @@ jobs:
           done
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Pull latest changes from main
+        if: env.changes_made == 'true'
+        run: |
+          git pull origin main
 
       - name: Create new tags for other modules
         if: env.changes_made == 'true'

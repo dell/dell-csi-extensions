@@ -8,7 +8,80 @@ version: 2
 updates:
   # Schedule for go module updates
   - package-ecosystem: "gomod"
-    directory: "/"
+    directory: "/common"
+    schedule:
+      interval: "daily"
+      time: "18:00"
+    allow:
+      # Allow both direct and indirect updates for all packages
+      - dependency-type: all
+    # a group of dependencies will be updated together in one pull request
+    groups:
+      golang:
+        # group all semantic versioning levels together in one pull request
+        update-types:
+          - major
+          - minor
+          - patch
+        patterns:
+          - "*"
+
+  - package-ecosystem: "gomod"
+    directory: "/migration"
+    schedule:
+      interval: "daily"
+      time: "18:00"
+    allow:
+      # Allow both direct and indirect updates for all packages
+      - dependency-type: all
+    # a group of dependencies will be updated together in one pull request
+    groups:
+      golang:
+        # group all semantic versioning levels together in one pull request
+        update-types:
+          - major
+          - minor
+          - patch
+        patterns:
+          - "*"
+  - package-ecosystem: "gomod"
+    directory: "/podmon"
+    schedule:
+      interval: "daily"
+      time: "18:00"
+    allow:
+      # Allow both direct and indirect updates for all packages
+      - dependency-type: all
+    # a group of dependencies will be updated together in one pull request
+    groups:
+      golang:
+        # group all semantic versioning levels together in one pull request
+        update-types:
+          - major
+          - minor
+          - patch
+        patterns:
+          - "*"
+  - package-ecosystem: "gomod"
+    directory: "/replication"
+    schedule:
+      interval: "daily"
+      time: "18:00"
+    allow:
+      # Allow both direct and indirect updates for all packages
+      - dependency-type: all
+    # a group of dependencies will be updated together in one pull request
+    groups:
+      golang:
+        # group all semantic versioning levels together in one pull request
+        update-types:
+          - major
+          - minor
+          - patch
+        patterns:
+          - "*"
+  - package-ecosystem: "gomod"
+    directory: "/volumeGroupSnapshot"
     schedule:
       interval: "daily"
       time: "18:00"

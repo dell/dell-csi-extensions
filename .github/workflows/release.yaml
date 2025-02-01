@@ -90,7 +90,7 @@ jobs:
             echo "changes_made=false" >> $GITHUB_ENV
           fi
 
-      - uses: actions/create-github-app-token@v1.11.1
+      - uses: actions/create-github-app-token@v1.11.2
         id: generate-token
         with:
           app-id: ${{ vars.CSM_RELEASE_APP_ID }}

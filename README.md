@@ -16,7 +16,7 @@ Current set of supported protocols:
 * volumeGroupSnapshot - Extensions to CSI to enable CSI drivers to manage crash-consistent snapshots of groups of volumes
 
 You can utilize the provided `Makefile` to compile protocol definitions in .proto files to go source files and then build
-the source files.
+the source files. 
 
 * `podmon` to compile and update files for podmon
 * `replication` to compile and update files for replication.

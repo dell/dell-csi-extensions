@@ -11,8 +11,10 @@ name: Release Dell-CSI-Extensions
 # Invocable as a reusable workflow
 # Can be manually triggered
 on:
-  workflow_call: 
-  workflow_dispatch:  
+  workflow_call:
+  workflow_dispatch:
+  repository_dispatch:
+    types: [release-go-libs]
 
 jobs:
   release-modules:
@@ -21,16 +23,16 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Fetch all history for all tags
+          fetch-depth: 0 # Fetch all history for all tags
 
       - name: Import GPG key
         uses: crazy-max/ghaction-import-gpg@v6
         with:
-            gpg_private_key: ${{ secrets.CSM_GPG_PRIVATE_KEY }}
-            git_user_signingkey: true
-            git_commit_gpgsign: true
-            git_tag_gpgsign: true
-            git_config_global: true
+          gpg_private_key: ${{ secrets.CSM_GPG_PRIVATE_KEY }}
+          git_user_signingkey: true
+          git_commit_gpgsign: true
+          git_tag_gpgsign: true
+          git_config_global: true
 
       - name: Fetch all tags
         run: git fetch --tags
@@ -57,11 +59,11 @@ jobs:
           new_minor=$((minor + 1))
           new_tag="$module/$major.$new_minor.0"
           new_version="$major.$new_minor.0"
-          
+
           echo "Creating new tag for $module: $new_tag"
           echo "${module}_new_tag=$new_tag" >> $GITHUB_ENV
           echo "${module}_new_version=$new_version" >> $GITHUB_ENV
-          
+
           git tag -s -a $new_tag -m "$module $new_tag"
           git push origin $new_tag
         env:
@@ -152,7 +154,7 @@ jobs:
         id: release_notes
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ github.event.inputs.volumeGroupSnapshot_new_tag }}  # Use the volumeGroupSnapshot tag
+          tag_name: ${{ github.event.inputs.volumeGroupSnapshot_new_tag }} # Use the volumeGroupSnapshot tag
           name: |
             Release volumeGroupSnapshot ${{ env.volumeGroupSnapshot_new_version }},
             Replication ${{ env.replication_new_version }}, 

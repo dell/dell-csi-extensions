@@ -1,6 +1,6 @@
 module github.com/dell/dell-csi-extensions/migration
 
-go 1.23
+go 1.24
 
 require (
 	github.com/dell/dell-csi-extensions/common v1.7.0

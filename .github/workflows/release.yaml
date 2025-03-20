@@ -1,9 +1,14 @@
+#Notes:
+# 1. This workflow must be triggered manually.
+# 2. It supports Major, Minor, and Patch releases.
+# 3. For Major and Minor releases, all inputs are required. For Patch releases, inputs can be adjusted based on requirements.
+
 # Summary of the steps:
-# 1.Create new tag for common module
-# 2.Update the dependency of common in "volumeGroupSnapshot", "replication", "migration" folder
+# 1.Create new tag for common module (if input is provided)
+# 2.Update the dependency of common in "replication", "migration" folder (if common input is provided)
 # 3.Raise PR for this change.
 # 4.Merge the PR.(Manually)
-# 5.Create the new tags for "volumeGroupSnapshot", "replication", "migration", "podmon"
+# 5.Create the new tags for "replication", "migration", "podmon" (if input is provided) 
 # 6.Create the GitHub release
 # 7.All the steps are automated except the step 4.
 
@@ -11,10 +16,24 @@ name: Release Dell-CSI-Extensions
 # Invocable as a reusable workflow
 # Can be manually triggered
 on:
-  workflow_call:
   workflow_dispatch:
-  repository_dispatch:
-    types: [release-go-libs]
+    inputs:
+      replication:
+        description: 'Version for replication module'
+        required: false
+        type: string
+      migration:
+        description: 'Version for migration module'
+        required: false
+        type: string
+      common:
+        description: 'Version for common module'
+        required: false
+        type: string
+      podmon:
+        description: 'Version for podmon module'
+        required: false
+        type: string
 
 jobs:
   release-modules:
@@ -25,46 +44,51 @@ jobs:
         with:
           fetch-depth: 0 # Fetch all history for all tags
 
+      - name: Validate inputs
+        run: |
+          if [ -z "${{ github.event.inputs.replication }}" ] && [ -z "${{ github.event.inputs.migration }}" ] && [ -z "${{ github.event.inputs.common }}" ] && [ -z "${{ github.event.inputs.podmon }}" ]; then
+            echo "Error: At least one input must be provided."
+            exit 1
+          fi
+
+          if [ -n "${{ github.event.inputs.common }}" ]; then
+            if [ -z "${{ github.event.inputs.replication }}" ] || [ -z "${{ github.event.inputs.migration }}" ]; then
+              echo "Error: If 'common' input is provided, both 'replication' and 'migration' must also be provided."
+              exit 1
+            fi
+          fi
+
       - name: Import GPG key
         uses: crazy-max/ghaction-import-gpg@v6
         with:
-          gpg_private_key: ${{ secrets.CSM_GPG_PRIVATE_KEY }}
-          git_user_signingkey: true
-          git_commit_gpgsign: true
-          git_tag_gpgsign: true
-          git_config_global: true
+            gpg_private_key: ${{ secrets.CSM_GPG_PRIVATE_KEY }}
+            git_user_signingkey: true
+            git_commit_gpgsign: true
+            git_tag_gpgsign: true
+            git_config_global: true
 
-      - name: Fetch all tags
-        run: git fetch --tags
-
-      - name: Get latest release tags for all modules
-        id: get_latest_release_tags
+      - name: Set module input versions
+        id: set_module_inputs
         run: |
-          modules=("volumeGroupSnapshot" "replication" "migration" "common" "podmon")
-          for module in "${modules[@]}"; do
-            latest_release_tag=$(git tag -l "$module/*" | sort -V | tail -n 1)
-            echo "Latest release tag for $module: $latest_release_tag"
-            echo "${module}_release_tag=$latest_release_tag" >> $GITHUB_ENV
-            version=${latest_release_tag#*/}
-            echo "${module}_version=$version" >> $GITHUB_ENV
-          done
+          echo "REPLICATION_VERSION=${{ inputs.replication }}" >> $GITHUB_ENV
+          echo "MIGRATION_VERSION=${{ inputs.migration }}" >> $GITHUB_ENV
+          echo "COMMON_VERSION=${{ inputs.common }}" >> $GITHUB_ENV
+          echo "PODMON_VERSION=${{ inputs.podmon }}" >> $GITHUB_ENV
 
       - name: Create new tag for common module
+        if: ${{ env.COMMON_VERSION }}
         id: create_common_tag
         run: |
           module="common"
-          latest_release_tag=$(eval echo \${${module}_release_tag})
-          IFS='/' read -r _ version <<< "$latest_release_tag"
-          IFS='.' read -r major minor patch <<< "$version"
-          new_minor=$((minor + 1))
-          new_tag="$module/$major.$new_minor.0"
-          new_version="$major.$new_minor.0"
-
+          new_version="v${{ env.COMMON_VERSION }}"
+          new_tag="$module/$new_version"
+          
           echo "Creating new tag for $module: $new_tag"
           echo "${module}_new_tag=$new_tag" >> $GITHUB_ENV
           echo "${module}_new_version=$new_version" >> $GITHUB_ENV
-
+          
           git tag -s -a $new_tag -m "$module $new_tag"
+          echo "Pushing the new tag $module/$new_version to the repository"
           git push origin $new_tag
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -72,19 +96,38 @@ jobs:
       - name: Update dependencies
         id: update_dependencies
         run: |
-          modules=("volumeGroupSnapshot" "replication" "migration")
-          common_version=$(eval echo \${common_new_version})
+          declare -A modules=( 
+            ["replication"]="${{ env.REPLICATION_VERSION }}",
+            ["migration"]="${{ env.MIGRATION_VERSION }}"
+          )
+
+          common_version=""
+          if [ -z "${{ env.COMMON_VERSION }}" ]; then
+             common_branch=$(git branch --show-current)
+             common_version=$(git tag --merged "$common_branch" -l "common/*" | sort -V | tail -n 1 | cut -d'/' -f2)
+             echo "Using latest common version: $common_version from branch: $common_branch"
+          else
+            common_version="v${{ env.COMMON_VERSION }}"
+            echo "Using provided common version: $common_version"
+          fi
+
           changes_made=false
-          for module in "${modules[@]}"; do
-            cd $module
-            go get github.com/dell/dell-csi-extensions/common@$common_version
-            go mod tidy
-            cd ..
-            if [[ -n $(git status --porcelain) ]]; then
-              git add $module/go.mod $module/go.sum
-              changes_made=true
+          for module in "${!modules[@]}"; do
+            input_version="${modules[$module]}"
+            echo "$module input_version=$input_version"
+            if [ -n "$input_version" ]; then
+              echo "Updating dependencies for module: $module"
+              cd $module
+              go get github.com/dell/dell-csi-extensions/common@$common_version
+              go mod tidy
+              cd ..
+              if [[ -n $(git status --porcelain) ]]; then
+                git add $module/go.mod $module/go.sum
+                changes_made=true
+              fi
             fi
           done
+
           if [ "$changes_made" = true ]; then
             git commit -m "Update common dependency to $common_version"
             echo "changes_made=true" >> $GITHUB_ENV
@@ -120,50 +163,67 @@ jobs:
               echo "PR has been merged."
               break
             fi
-            echo "PR not merged yet. Sleeping for 1 minute..."
-            sleep 60
+            echo "PR not merged yet. Sleeping for 30 seconds..."
+            sleep 30
           done
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Pull latest changes from main
         if: env.changes_made == 'true'
         run: |
           git pull origin main
 
       - name: Create new tags for other modules
-        if: env.changes_made == 'true'
         run: |
-          modules=("volumeGroupSnapshot" "replication" "migration" "podmon")
-          for module in "${modules[@]}"; do
-            latest_release_tag=$(eval echo \${${module}_release_tag})
-            IFS='/' read -r _ version <<< "$latest_release_tag"
-            IFS='.' read -r major minor patch <<< "$version"
-            new_minor=$((minor + 1))
-            new_tag="$module/$major.$new_minor.0"
-            new_version="$major.$new_minor.0"
-            
-            echo "Creating new tag for $module: $new_tag"
-            echo "${module}_new_tag=$new_tag" >> $GITHUB_ENV
-            echo "${module}_new_version=$new_version" >> $GITHUB_ENV
-            
-            git tag -s -a $new_tag -m "$module $new_tag"
-            git push origin $new_tag
+          declare -A modules=( 
+            ["replication"]="${REPLICATION_VERSION}"
+            ["migration"]="${MIGRATION_VERSION}"
+            ["podmon"]="${PODMON_VERSION}"
+          )
+          for module in "${!modules[@]}"; do
+            new_version="${modules[$module]}"
+            if [ -n "$new_version" ]; then
+              new_tag="$module/v$new_version"
+
+              echo "Creating new tag for $module: $new_tag"
+              git tag -s -a $new_tag -m "$module $new_tag"
+              git push origin $new_tag
+            fi
           done
 
       - name: Create GitHub Release
-        id: release_notes
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: ${{ github.event.inputs.volumeGroupSnapshot_new_tag }} # Use the volumeGroupSnapshot tag
-          name: |
-            Release volumeGroupSnapshot ${{ env.volumeGroupSnapshot_new_version }},
-            Replication ${{ env.replication_new_version }}, 
-            Migration ${{ env.migration_new_version }},
-            Common ${{ env.common_new_version }}, 
-            Podmon ${{ env.podmon_new_version }}
-          generate_release_notes: true
-          draft: true
-          prerelease: false
-          make_latest: true
+        run: |
+          release_name=""
+          tag_name=""
+          if [ -n "${{ env.REPLICATION_VERSION }}" ]; then
+            release_name="${release_name}Replication v${{ env.REPLICATION_VERSION }}, "
+            tag_name="replication/v${{ env.REPLICATION_VERSION }}"
+          fi
+          if [ -n "${{ env.MIGRATION_VERSION }}" ]; then
+            release_name="${release_name}Migration v${{ env.MIGRATION_VERSION }}, "
+            if [ -z "$tag_name" ]; then
+              tag_name="migration/v${{ env.MIGRATION_VERSION }}"
+            fi
+          fi
+          if [ -n "${{ env.COMMON_VERSION }}" ]; then
+            release_name="${release_name}Common v${{ env.COMMON_VERSION }}, "
+            if [ -z "$tag_name" ]; then
+              tag_name="common/v${{ env.COMMON_VERSION }}"
+            fi
+          fi
+          if [ -n "${{ env.PODMON_VERSION }}" ]; then
+            release_name="${release_name}Podmon v${{ env.PODMON_VERSION }}, "
+            if [ -z "$tag_name" ]; then
+              tag_name="podmon/v${{ env.PODMON_VERSION }}"
+            fi
+          fi
+
+          release_name="${release_name%??}"  # Remove the trailing comma and space
+
+          echo "Release notes: ${release_notes}"
+          echo "Release name: ${release_name}"
+          echo "Creating GitHub release with tag name: $tag_name"
+          gh release create $tag_name --title "$release_name" --generate-notes --draft=true --prerelease=false --latest=true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

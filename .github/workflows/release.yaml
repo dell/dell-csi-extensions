@@ -193,7 +193,7 @@ jobs:
 
       - name: Create GitHub Release
         run: |
-        release_name="Release "
+          release_name="Release "
           tag_name=""
           if [ -n "${{ env.REPLICATION_VERSION }}" ]; then
             release_name="${release_name}Replication v${{ env.REPLICATION_VERSION }}, "

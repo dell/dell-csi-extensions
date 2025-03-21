@@ -1,7 +1,8 @@
 #Notes:
 # 1. This workflow must be triggered manually.
 # 2. It supports Major, Minor, and Patch releases.
-# 3. For Major and Minor releases, all inputs are required. For Patch releases, inputs can be adjusted based on requirements.
+# 3. For Major and Minor releases, all inputs are required. 
+# 4. For Patch releases, select the branch where patch change are present and inputs the version which needs to be released.
 
 # Summary of the steps:
 # 1.Create new tag for common module (if input is provided)
@@ -13,7 +14,6 @@
 # 7.All the steps are automated except the step 4.
 
 name: Release Dell-CSI-Extensions
-# Invocable as a reusable workflow
 # Can be manually triggered
 on:
   workflow_dispatch:
@@ -43,6 +43,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0 # Fetch all history for all tags
+          ref: ${{ github.ref }} # Checkout the branch from which the workflow is triggered
 
       - name: Validate inputs
         run: |
@@ -101,37 +102,35 @@ jobs:
             ["migration"]="${{ env.MIGRATION_VERSION }}"
           )
 
-          common_version=""
-          if [ -z "${{ env.COMMON_VERSION }}" ]; then
-             common_branch=$(git branch --show-current)
-             common_version=$(git tag --merged "$common_branch" -l "common/*" | sort -V | tail -n 1 | cut -d'/' -f2)
-             echo "Using latest common version: $common_version from branch: $common_branch"
-          else
+          if [ -n "${{ env.COMMON_VERSION }}" ]; then
             common_version="v${{ env.COMMON_VERSION }}"
             echo "Using provided common version: $common_version"
-          fi
 
-          changes_made=false
-          for module in "${!modules[@]}"; do
-            input_version="${modules[$module]}"
-            echo "$module input_version=$input_version"
-            if [ -n "$input_version" ]; then
-              echo "Updating dependencies for module: $module"
-              cd $module
-              go get github.com/dell/dell-csi-extensions/common@$common_version
-              go mod tidy
-              cd ..
-              if [[ -n $(git status --porcelain) ]]; then
-                git add $module/go.mod $module/go.sum
-                changes_made=true
+            changes_made=false
+            for module in "${!modules[@]}"; do
+              input_version="${modules[$module]}"
+              echo "$module input_version=$input_version"
+              if [ -n "$input_version" ]; then
+                echo "Updating dependencies for module: $module"
+                cd $module
+                go get github.com/dell/dell-csi-extensions/common@$common_version
+                go mod tidy
+                cd ..
+                if [[ -n $(git status --porcelain) ]]; then
+                  git add $module/go.mod $module/go.sum
+                  changes_made=true
+                fi
               fi
-            fi
-          done
+            done
 
-          if [ "$changes_made" = true ]; then
-            git commit -m "Update common dependency to $common_version"
-            echo "changes_made=true" >> $GITHUB_ENV
+            if [ "$changes_made" = true ]; then
+              git commit -m "Update common dependency to $common_version"
+              echo "changes_made=true" >> $GITHUB_ENV
+            else
+              echo "changes_made=false" >> $GITHUB_ENV
+            fi
           else
+            echo "COMMON_VERSION not provided. Skipping dependency update."
             echo "changes_made=false" >> $GITHUB_ENV
           fi
 
@@ -194,7 +193,7 @@ jobs:
 
       - name: Create GitHub Release
         run: |
-          release_name=""
+        release_name="Release "
           tag_name=""
           if [ -n "${{ env.REPLICATION_VERSION }}" ]; then
             release_name="${release_name}Replication v${{ env.REPLICATION_VERSION }}, "

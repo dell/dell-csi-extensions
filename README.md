@@ -13,14 +13,12 @@ Current set of supported protocols:
 * podmon -  Extensions to CSI to enable CSI drivers to report host connectivity status
 * replication - Extensions to CSI to enable CSI drivers to leverage storage array based
  replication within Kubernetes clusters
-* volumeGroupSnapshot - Extensions to CSI to enable CSI drivers to manage crash-consistent snapshots of groups of volumes
 
 You can utilize the provided `Makefile` to compile protocol definitions in .proto files to go source files and then build
 the source files.
 
 * `podmon` to compile and update files for podmon
 * `replication` to compile and update files for replication.
-* `volumeGroupSnapshot` to compile and update files for volumeGroupSnapshot
 
 Each protocol is available as a `go module` and can be included separately in CSI drivers.
 
@@ -29,7 +27,6 @@ This facility is available in the forked version of gocsi [here](https://github.
 
 For using `podmon`, include "github.com/dell/dell-csi-extensions/podmon" in your go module dependencies.  
 For using `replication`, include "github.com/dell/dell-csi-extensions/replication" in your go module dependencies.
-For using `volumeGroupSnapshot`, include "github.com/dell/dell-csi-extensions/volumeGroupSnapshot" in your go module dependencies.
 
 ## Table of Contents
 

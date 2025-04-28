@@ -1,4 +1,4 @@
-all: clean common replication podmon volumeGroupSnapshot migration
+all: clean common replication podmon migration
 
 ########################################################################
 ##                             GOLANG                                 ##
@@ -96,18 +96,13 @@ podmon: $(PROTOC) $(PROTOC_GEN_GO)
 	$(PWD)/$(PROTOC) -I $(PROTO_INCLUDE) --go_out="$@" --go_opt=paths=source_relative --go-grpc_out=require_unimplemented_servers=false:"$@" --go-grpc_opt=paths=source_relative  --proto_path="$@" ./"$@"/"$@".proto
 	(cd "$@"; go mod tidy; go build "$@".pb.go)
 
-.PHONY: volumeGroupSnapshot
-volumeGroupSnapshot: $(PROTOC) $(PROTOC_GEN_GO)
-	$(PWD)/$(PROTOC) -I $(PROTO_INCLUDE) -I ./common --go_out="$@" --go_opt=paths=source_relative --go-grpc_out=require_unimplemented_servers=false:"$@" --go-grpc_opt=paths=source_relative  --proto_path="$@" ./"$@"/"$@".proto
-	(cd "$@"; go mod tidy; go build "$@".pb.go)
-
 .PHONY: common
 common: $(PROTOC) $(PROTOC_GEN_GO)
 	$(PWD)/$(PROTOC) -I $(PROTO_INCLUDE) --go_out="$@" --go_opt=paths=source_relative --go-grpc_out=require_unimplemented_servers=false:"$@" --go-grpc_opt=paths=source_relative  --proto_path="$@" ./"$@"/"$@".proto
 	(cd "$@"; go mod tidy; go build "$@".pb.go)
 
 clean:
-	rm -rf ./replication/replication.pb.go ./replication/replication_grpc.pb.go ./podmon/podmon.pb.go ./podmon/podmon_grpc.pb.go ./volumeGroupSnapshot/volumeGroupSnapshot.pb.go ./volumeGroupSnapshot/volumeGroupSnapshot_grpc.pb.go ./migration/migration.pb.go ./migration/migration_grpc.pb.go ./common/common.pb.go
+	rm -rf ./replication/replication.pb.go ./replication/replication_grpc.pb.go ./podmon/podmon.pb.go ./podmon/podmon_grpc.pb.go ./migration/migration.pb.go ./migration/migration_grpc.pb.go ./common/common.pb.go
 
 clobber: clean
 	rm -rf "$(PROTOC)" "$(PROTOC_GEN_GO)" "$(PROTOC_TMP_DIR)"

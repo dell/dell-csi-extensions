@@ -2,7 +2,6 @@
 
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg)](docs/CODE_OF_CONDUCT.md)
 [![License](https://img.shields.io/github/license/dell/dell-csi-extensions)](LICENSE)
-[![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/dell/dell-csi-extensions?include_prereleases&label=latest&style=flat-square)](https://github.com/dell/dell-csi-extensions/releases/latest)
 
 This repository holds definitions of additional `grpc` protocols which can be implemented by CSI drivers to build upon existing
 functionality supported via the Container Storage Interface ([CSI](https://github.com/container-storage-interface/spec)).

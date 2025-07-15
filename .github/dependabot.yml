@@ -8,7 +8,11 @@ version: 2
 updates:
   # Schedule for go module updates
   - package-ecosystem: "gomod"
-    directory: "/"
+    directories:
+      - "/common"
+      - "/migration"
+      - "/replication"
+      - "/podmon"
     schedule:
       interval: "weekly"
       day: "sunday"

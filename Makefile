@@ -20,7 +20,7 @@ export GOPATH
 
 # Only set PROTOC_VER if it has an empty value.
 ifeq (,$(strip $(PROTOC_VER)))
-PROTOC_VER := 26.1
+PROTOC_VER := 31.1
 endif
 
 PROTOC_OS := $(shell uname -s)
@@ -69,8 +69,8 @@ $(PROTOC):
 # for protoc
 PROTOC_GEN_GO := protoc-gen-go
 $(PROTOC_GEN_GO):
-	go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.34.0
-	go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.3.0
+	go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.36.6
+	go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.5.1
 
 ########################################################################
 ##                              PATH                                  ##

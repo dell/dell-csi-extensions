@@ -35,7 +35,7 @@ jobs:
       - name: Run Go Security
         uses: securego/gosec@master
         with:
-          args: -exclude=G103 ./...
+          args: -quiet -exclude=G103 ./...
   malware_security_scan:
     name: Malware Scanner
     runs-on: ubuntu-latest

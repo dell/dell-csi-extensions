@@ -40,7 +40,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0 # Fetch all history for all tags
           ref: ${{ github.ref }} # Checkout the branch from which the workflow is triggered
@@ -134,7 +134,7 @@ jobs:
             echo "changes_made=false" >> $GITHUB_ENV
           fi
 
-      - uses: actions/create-github-app-token@v2.1.0
+      - uses: actions/create-github-app-token@v2.1.1
         id: generate-token
         with:
           app-id: ${{ vars.CSM_RELEASE_APP_ID }}

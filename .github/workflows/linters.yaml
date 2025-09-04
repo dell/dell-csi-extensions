@@ -16,7 +16,7 @@ jobs:
     steps:
       - uses: actions/setup-go@v5
         with:
-          go-version: "1.24"
+          go-version: "1.25"
           cache: false
       - name: Checkout the code
         uses: actions/checkout@v5
@@ -32,7 +32,7 @@ jobs:
     steps:
       - uses: actions/setup-go@v5
         with:
-          go-version: "1.24"
+          go-version: "1.25"
           cache: false
       - name: Checkout the code
         uses: actions/checkout@v5
@@ -48,7 +48,7 @@ jobs:
     steps:
       - uses: actions/setup-go@v5
         with:
-          go-version: "1.24"
+          go-version: "1.25"
           cache: false
       - name: Checkout the code
         uses: actions/checkout@v5
@@ -64,7 +64,7 @@ jobs:
     steps:
       - uses: actions/setup-go@v5
         with:
-          go-version: "1.24"
+          go-version: "1.25"
           cache: false
       - name: Checkout the code
         uses: actions/checkout@v5

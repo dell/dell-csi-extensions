@@ -1,5 +1,5 @@
-github.com/dell/dell-csi-extensions/common v1.8.0 h1:2mmcdWtGKLQlGYr+ju3TDCtYkP1KU0e1JETL8wUWfLc=
-github.com/dell/dell-csi-extensions/common v1.8.0/go.mod h1:0cJvgNiPOosCJujd60aV9ZTujsHbRJNXX0ARRMDyjfw=
+github.com/dell/dell-csi-extensions/common v1.9.0 h1:H1NXBYlJZ+XTCe4tSXo94Lvg8HD2wgt6ywql3kVrG34=
+github.com/dell/dell-csi-extensions/common v1.9.0/go.mod h1:DA9lX2BX3fdshR40IaXfokDrIKo9a32QShcTlAqhf+c=
 github.com/go-logr/logr v1.4.3 h1:CjnDlHq8ikf6E492q6eKboGOC0T8CDaOvkHCIg8idEI=
 github.com/go-logr/logr v1.4.3/go.mod h1:9T104GzyrTigFIr8wt5mBrctHMim0Nb2HLGrmQ40KvY=
 github.com/go-logr/stdr v1.2.2 h1:hSWxHoqTgW2S2qGc0LTAI563KZ5YKYRhT3MFKZMbjag=

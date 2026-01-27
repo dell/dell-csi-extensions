@@ -143,7 +143,7 @@ const file_common_proto_rawDesc = "" +
 	"\x05ready\x18\x04 \x01(\v2\x1a.google.protobuf.BoolValueR\x05ready\x1a;\n" +
 	"\rManifestEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B,Z*github.com/dell/dell-csi-extensions/commonb\x06proto3"
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B8Z6github.com/dell/dell-csi-extensions/commonb\x06proto3"
 
 var (
 	file_common_proto_rawDescOnce sync.Once

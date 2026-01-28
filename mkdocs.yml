@@ -1,0 +1,7 @@
+site_name: 'dell-csi-extensions'
+site_description: 'dell-csi-extensions Documentation.'
+docs_dir: docs
+plugins:
+  - techdocs-core
+theme:
+  name: material

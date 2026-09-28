@@ -3,3 +3,4 @@
 .protoc
 protoc
 protoc-gen-go
+*vendor/

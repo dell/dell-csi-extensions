@@ -1,3 +1,5 @@
+// Copyright © 2026 Dell Inc. or its subsidiaries. All Rights Reserved.
+
 syntax = "proto3";
 package replication.v1;
 
@@ -248,6 +250,26 @@ message StorageProtectionGroupStatus {
   // The state of the protection group
   State state = 1;
   bool isSource = 2;
+
+  // Time lag in seconds between source and target replication.
+  // For PowerFlex: LagReceivedInMillis / 1000 from RCG statistics.
+  // For SyncIQ: time since last successful sync job completion.
+  // 0 or unset means lag data is not available from the storage array.
+  // Optional field - backward compatible with older drivers.
+  int64 lag_seconds = 3;
+
+  // Current replication bandwidth in bytes per second.
+  // For PowerFlex: BandwidthKBps(RplTransmitBwc) * 1024 from RCG statistics.
+  // For SyncIQ: throughput from last sync job.
+  // 0 or unset means bandwidth data is not available from the storage array.
+  // Optional field - backward compatible with older drivers.
+  int64 bandwidth_bytes_per_sec = 4;
+
+  // Unix timestamp of the last successful replication sync.
+  // Used to calculate lag if lag_seconds is not directly available.
+  // 0 or unset means timestamp is not available from the storage array.
+  // Optional field - backward compatible with older drivers.
+  int64 last_sync_timestamp = 5;
 }
 
 message GetStorageProtectionGroupStatusResponse {
